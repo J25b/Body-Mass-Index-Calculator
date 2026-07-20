@@ -194,9 +194,9 @@ This project is licensed under the MIT License.
 
 Adedeji Jubril Abisade
 
-Artist • Tech Enthusiast • Web Developer
+AI Automation • Tech Enthusiast • AI Software Developer
 
-GitHub: https://github.com/yourusername
+GitHub: https://github.com/J25b
 
 ---
 
