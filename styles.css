@@ -604,11 +604,11 @@ input[type=number] { -moz-appearance: textfield; }
 
 .wellness-insight {
   font-family: 'Karla', sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--ink);
   background: var(--accent-bg);
   border-left: 3px solid var(--brass);
-  padding: 9px 11px;
+  padding: 9px 10px;
   line-height: 1.6;
   margin-bottom: 6px;
 }
