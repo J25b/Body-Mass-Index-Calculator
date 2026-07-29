@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('bodyiqTheme');
+    if (!t) t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<title>Body IQ — Personal Check-in</title>
+<meta name="description" content="Body IQ: step two of three — a quick lifestyle check-in to personalize your health recommendations.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Karla:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="card">
+  <button type="button" class="theme-toggle" id="themeToggle" onclick="toggleTheme()">Dark</button>
+  <svg class="tag-loop" width="40" height="46" viewBox="0 0 40 46">
+    <path d="M8 30 C8 10, 32 10, 32 30" fill="none" stroke="#B9AC85" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="20" cy="34" r="7" fill="#FBF7EE" stroke="#A9863E" stroke-width="2.5"/>
+    <circle cx="20" cy="34" r="3" fill="#DCD3BC"/>
+  </svg>
+
+  <div class="brand-name">BODY IQ</div>
+  <div class="eyebrow">STEP 2 OF 3 — PERSONAL CHECK-IN</div>
+  <h1>Let's personalize this</h1>
+  <p class="subtitle">A few quick questions, then we'll gather everything together.</p>
+
+  <!-- Shown only if a measurement exists -->
+  <div id="checkinContent" style="display:none;">
+    <p class="recap-line" id="recapLine"></p>
+
+    <div class="field stacked-field">
+      <label for="activityLevel" class="question-label">How much do you move in a typical day?</label>
+      <div class="input-row">
+        <select id="activityLevel">
+          <option value="">Choose one</option>
+          <option value="sedentary">I mostly sit or stay in one place all day</option>
+          <option value="light">I move around a little here and there</option>
+          <option value="moderate">I'm fairly active most days</option>
+          <option value="active">I'm on the move constantly</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field stacked-field">
+      <label for="goal" class="question-label">What are you hoping to do?</label>
+      <div class="input-row">
+        <select id="goal">
+          <option value="">Choose one</option>
+          <option value="lose">I want to lose weight</option>
+          <option value="gain">I want to gain weight</option>
+          <option value="maintain">I want to stay around where I am</option>
+          <option value="improve">I just want to feel healthier overall</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field stacked-field">
+      <label for="eating" class="question-label">How would you describe the way you eat?</label>
+      <div class="input-row">
+        <select id="eating">
+          <option value="">Choose one</option>
+          <option value="healthy">I eat pretty healthy, most of the time</option>
+          <option value="mixed">It's a mix — some healthy, some not</option>
+          <option value="processed">Mostly fast food or processed meals</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field stacked-field">
+      <label for="exercise" class="question-label">How often do you exercise in a week?</label>
+      <div class="input-row">
+        <select id="exercise">
+          <option value="">Choose one</option>
+          <option value="never">Rarely or never</option>
+          <option value="1-2">A day or two a week</option>
+          <option value="3-5">A solid few days a week</option>
+          <option value="daily">Pretty much every day</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field stacked-field">
+      <label for="sleep" class="question-label">How much sleep do you usually get a night?</label>
+      <div class="input-row">
+        <select id="sleep">
+          <option value="">Choose one</option>
+          <option value="less6">Not much — under 6 hours</option>
+          <option value="6-8">A decent amount — 6 to 8 hours</option>
+          <option value="more8">Plenty — more than 8 hours</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="error-note" id="assessmentError">Please answer each question so I can tailor this properly.</p>
+
+    <button type="button" class="measure-btn" onclick="goToResults()">Generate My Health Recommendations</button>
+    <button type="button" class="text-link" onclick="window.location.href='index.html'">← Back to measurements</button>
+  </div>
+
+  <!-- Shown only if no measurement is found -->
+  <div id="noDataState" class="fallback" style="display:none;">
+    <p>Looks like we don't have your measurements yet — let's start there.</p>
+    <a class="measure-btn" href="index.html">Start with your measurements →</a>
+  </div>
+</div>
+
+<!-- Anonymous, aggregate usage counting only — see analytics.js and the
+     Privacy First section on the results page for exactly what this does. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="analytics.js"></script>
+<script src="shared.js"></script>
+<script>
+  const measurement = loadMeasurement();
+
+  if (!measurement) {
+    document.getElementById('noDataState').style.display = 'block';
+  } else {
+    document.getElementById('checkinContent').style.display = 'block';
+    const who = measurement.name ? measurement.name + ', your' : 'Your';
+    document.getElementById('recapLine').textContent =
+      who + ' BMI was ' + measurement.bmiRounded + ' — ' + measurement.category + '.';
+  }
+
+  syncThemeToggleButton();
+
+  function goToResults() {
+    const activity = document.getElementById('activityLevel').value;
+    const goal = document.getElementById('goal').value;
+    const eating = document.getElementById('eating').value;
+    const exercise = document.getElementById('exercise').value;
+    const sleep = document.getElementById('sleep').value;
+    const errEl = document.getElementById('assessmentError');
+
+    if (!activity || !goal || !eating || !exercise || !sleep) {
+      errEl.classList.add('show');
+      return;
+    }
+    errEl.classList.remove('show');
+
+    const assessment = { activity: activity, goal: goal, eating: eating, exercise: exercise, sleep: sleep };
+    saveAssessment(assessment);
+
+    if (window.BodyIQAnalytics && measurement) {
+      try {
+        const scores = computeWellnessScores(measurement, assessment);
+        window.BodyIQAnalytics.trackAssessmentCompleted(goal, scores.overall);
+      } catch (e) { /* tracking is best-effort and must never block navigation */ }
+    }
+
+    window.location.href = 'results.html';
+  }
+</script>
+
+</body>
+</html>

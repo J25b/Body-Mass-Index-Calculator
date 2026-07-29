@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('bodyiqTheme');
+    if (!t) t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+})();
+</script>
+<title>Body IQ — Your Results</title>
+<meta name="description" content="Body IQ: step three of three — your BMI, calorie estimates, and personalized recommendations, gathered in one place.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Karla:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="card">
+  <button type="button" class="theme-toggle" id="themeToggle" onclick="toggleTheme()">Dark</button>
+  <svg class="tag-loop" width="40" height="46" viewBox="0 0 40 46">
+    <path d="M8 30 C8 10, 32 10, 32 30" fill="none" stroke="#B9AC85" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="20" cy="34" r="7" fill="#FBF7EE" stroke="#A9863E" stroke-width="2.5"/>
+    <circle cx="20" cy="34" r="3" fill="#DCD3BC"/>
+  </svg>
+
+  <div class="brand-name">BODY IQ</div>
+  <div class="eyebrow">STEP 3 OF 3 — YOUR RESULTS</div>
+  <h1>Here's everything, together</h1>
+  <p class="subtitle">Your measurements and check-in, gathered in one place.</p>
+
+  <!-- Shown only when both measurement + assessment exist -->
+  <div id="resultsContent" style="display:none;">
+
+    <div class="reveal reveal-1">
+      <div class="tape-eyebrow">BMI</div>
+      <div class="tape-numbers">
+        <span>15</span><span>20</span><span>25</span><span>30</span><span>35</span><span>40</span>
+      </div>
+      <div class="tape-wrap">
+        <div class="tape">
+          <div class="pin" id="pin"></div>
+          <div class="pin-label" id="pinLabel"></div>
+          <div class="tape-zones">
+            <span class="zone-under"></span><span class="zone-normal"></span><span class="zone-over"></span><span class="zone-obese"></span>
+          </div>
+        </div>
+      </div>
+
+      <p class="result-category">
+        <span id="possessive">Your</span> build is in the <span id="categoryWord"></span> range.
+      </p>
+      <p class="result-note">BMI doesn't know about muscle, bone, or you. Read it as a nudge, not a grade.</p>
+      <p class="healthy-range" id="healthyRange"></p>
+      <p class="genetics-note" id="geneticsNote"></p>
+    </div>
+
+    <div class="reveal reveal-2">
+      <p class="perf-label">for you</p>
+      <div class="perf-line"></div>
+      <p class="reco-greeting" id="recoGreeting"></p>
+
+      <div class="reco-card"><h3>Nutrition</h3><p id="recoNutrition"></p></div>
+      <div class="reco-card"><h3>Physical Activity</h3><p id="recoActivity"></p></div>
+      <div class="reco-card"><h3>Sleep &amp; Recovery</h3><p id="recoSleep"></p></div>
+      <div class="reco-card"><h3>Hydration</h3><p id="recoHydration"></p></div>
+      <div class="reco-card"><h3>Overall Lifestyle</h3><p id="recoLifestyle"></p></div>
+    </div>
+
+    <div class="reveal reveal-3">
+      <p class="perf-label">daily energy</p>
+      <div class="perf-line"></div>
+      <div id="calorieSection">
+        <div id="calorieGrid"></div>
+        <p class="calorie-caveat">Rough estimates from the Mifflin–St Jeor formula — not a prescription.</p>
+      </div>
+      <p class="calorie-missing" id="calorieMissing">Add your age and sex on Step 1, then run through the flow again, to unlock calorie estimates.</p>
+    </div>
+
+    <div class="reveal reveal-4">
+      <p class="perf-label">wellness snapshot</p>
+      <div class="perf-line"></div>
+      <div class="wellness-wheel-wrap" id="wellnessWheel"></div>
+      <p class="wellness-insight" id="wellnessInsightText"></p>
+    </div>
+
+    <div class="reveal reveal-5">
+      <p class="perf-label">wellness score</p>
+      <div class="perf-line"></div>
+      <div class="score-box">
+        <div class="score-number" id="scoreNumber">—<span>/100</span></div>
+        <div class="score-status" id="scoreStatus"></div>
+      </div>
+      <p class="score-explanation" id="scoreExplanation"></p>
+    </div>
+
+    <div class="reveal reveal-6">
+      <p class="perf-label">your body reflection</p>
+      <div class="perf-line"></div>
+      <div class="reflection-block" id="reflectionBlock"></div>
+    </div>
+
+    <div class="reveal reveal-7">
+      <button type="button" class="copy-btn" id="pdfBtn" onclick="downloadReport()">Download Health Report</button>
+    </div>
+
+    <div class="reveal reveal-8">
+      <div class="notice-box">
+        <h4>Privacy First</h4>
+        <p>Body IQ was built without accounts or ads, and keeps data collection to the bare minimum needed to know the tool is actually useful. Here's what that means in practice:</p>
+        <ul class="privacy-first-list">
+          <li>No account or sign-up required</li>
+          <li>No advertisements, ever</li>
+          <li>No cookies, fingerprinting, or third-party trackers</li>
+          <li>Your BMI, calorie, and recommendation calculations happen locally, in your browser, and stay there</li>
+          <li>We record anonymous, aggregate usage counts (like how many people visited, and how many BMI calculations were run) — never your name, measurements, goals, or results</li>
+          <li>Your personal results are never uploaded anywhere unless you choose to download or share them yourself</li>
+        </ul>
+      </div>
+
+      <div class="notice-box">
+        <h4>Medical Disclaimer</h4>
+        <p>Body IQ is an educational wellness tool designed to provide general health information. BMI, calorie estimates, and personalized recommendations are general guidance only and are not medical advice, diagnosis, or treatment. BMI is only one indicator of health and may not accurately represent body composition for everyone, including athletes, pregnant individuals, older adults, or people with high muscle mass. Always consult a qualified healthcare professional before making significant changes to your diet, exercise routine, or lifestyle.</p>
+      </div>
+
+      <button type="button" class="text-link" onclick="startOver()">Start over</button>
+    </div>
+  </div>
+
+  <!-- Shown if measurement or assessment is missing -->
+  <div id="fallbackState" class="fallback" style="display:none;">
+    <p id="fallbackMessage"></p>
+    <a class="measure-btn" id="fallbackLink" href="index.html">Continue →</a>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- Anonymous, aggregate usage counting only — see analytics.js and the
+     Privacy First section below for exactly what this does. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="analytics.js"></script>
+<script src="dynamic-content.js"></script>
+<script src="shared.js"></script>
+<script>
+  const measurement = loadMeasurement();
+  const assessment = loadAssessment();
+
+  if (!measurement) {
+    showFallback("Let's start with your measurements first.", 'index.html', 'Go to Step 1 →');
+  } else if (!assessment) {
+    showFallback("Let's finish your quick check-in first.", 'checkin.html', 'Go to Step 2 →');
+  } else {
+    renderResults(measurement, assessment);
+  }
+
+  syncThemeToggleButton();
+
+  function showFallback(message, href, linkText) {
+    document.getElementById('fallbackMessage').textContent = message;
+    const link = document.getElementById('fallbackLink');
+    link.href = href;
+    link.textContent = linkText;
+    document.getElementById('fallbackState').style.display = 'block';
+  }
+
+  function renderResults(m, a) {
+    document.getElementById('resultsContent').style.display = 'block';
+
+    const clamped = Math.min(Math.max(m.bmi, 15), 40);
+    const pos = ((clamped - 15) / 25) * 100;
+    document.getElementById('pin').style.left = pos + '%';
+    const pinLabel = document.getElementById('pinLabel');
+    pinLabel.style.left = pos + '%';
+    pinLabel.textContent = m.bmiRounded;
+
+    document.getElementById('possessive').textContent = m.name ? m.name + '\u2019s' : 'Your';
+    const catWord = document.getElementById('categoryWord');
+    catWord.textContent = m.category;
+    catWord.style.color = getCategoryColor(m.category);
+
+    document.getElementById('healthyRange').innerHTML =
+      'For this height, a Normal-range weight would be about <strong>' + m.rangeText + '</strong>.';
+
+    const geneticsEl = document.getElementById('geneticsNote');
+    if (m.category === 'Underweight' || m.category === 'Obese') {
+      geneticsEl.textContent = "Wondering why the number landed here? For a lot of people, genetics, bone structure, or family body type play a real role \u2014 sometimes more than diet or exercise do. This is one data point about you, not a verdict on your habits.";
+      geneticsEl.classList.add('show');
+    } else {
+      geneticsEl.classList.remove('show');
+    }
+
+    const first = (m.name || '').trim().split(' ')[0];
+    document.getElementById('recoGreeting').textContent =
+      (first ? 'Hello ' + first + ',' : 'Hello,') +
+      ' based on your BMI and lifestyle check-in, here are a few general pointers that may help.';
+
+    document.getElementById('recoNutrition').textContent = nutritionText(a.eating, a.goal);
+    document.getElementById('recoActivity').textContent = activityText(a.exercise, a.goal);
+    document.getElementById('recoSleep').textContent = sleepText(a.sleep);
+    document.getElementById('recoHydration').textContent = hydrationText(a.activity);
+    document.getElementById('recoLifestyle').textContent = lifestyleText(a.goal);
+
+    renderCalorieBreakdown(m, a);
+
+    const scores = computeWellnessScores(m, a);
+    document.getElementById('wellnessWheel').innerHTML = buildWellnessWheelSVG(scores);
+    document.getElementById('wellnessInsightText').innerHTML = wellnessInsight(scores);
+
+    document.getElementById('scoreNumber').innerHTML = scores.overall + '<span>/100</span>';
+    const statusEl = document.getElementById('scoreStatus');
+    statusEl.textContent = scores.status;
+    statusEl.className = 'score-status ' + wellnessStatusClass(scores.status);
+    document.getElementById('scoreExplanation').textContent = wellnessExplanation(scores);
+
+    const reflectionParagraphs = buildBodyReflection(m, a, scores);
+    document.getElementById('reflectionBlock').innerHTML = reflectionParagraphs.map(function (p) { return '<p>' + p + '</p>'; }).join('');
+
+    window.lastScores = scores;
+    window.lastReflection = reflectionParagraphs;
+  }
+
+  function renderCalorieBreakdown(m, a) {
+    const grid = document.getElementById('calorieGrid');
+    const section = document.getElementById('calorieSection');
+    const missing = document.getElementById('calorieMissing');
+
+    if (!m.bmr) {
+      section.style.display = 'none';
+      missing.style.display = 'block';
+      return;
+    }
+    missing.style.display = 'none';
+    section.style.display = 'block';
+
+    const tdee = m.bmr * (ACTIVITY_MULTIPLIER[a.activity] || 1.2);
+    const loss = Math.max(Math.round(tdee - 500), 1200);
+    const gain = Math.round(tdee + 500);
+
+    grid.innerHTML = '';
+    [
+      ['Estimated BMR', Math.round(m.bmr) + ' kcal/day'],
+      ['Maintenance (TDEE)', Math.round(tdee) + ' kcal/day'],
+      ['For Weight Loss', '~' + loss + ' kcal/day'],
+      ['For Weight Gain', '~' + gain + ' kcal/day']
+    ].forEach(function (r) {
+      const row = document.createElement('div');
+      row.className = 'calorie-row';
+      const label = document.createElement('span');
+      label.textContent = r[0];
+      const val = document.createElement('strong');
+      val.textContent = r[1];
+      row.appendChild(label);
+      row.appendChild(val);
+      grid.appendChild(row);
+    });
+  }
+
+  async function downloadReport() {
+    const btn = document.getElementById('pdfBtn');
+    if (!window.jspdf) {
+      btn.textContent = "Couldn't load PDF tool";
+      setTimeout(function () { btn.textContent = 'Download Health Report'; }, 1800);
+      return;
+    }
+
+    let footerText = 'Generated by Body IQ';
+    if (window.BodyIQContent) {
+      try {
+        const custom = await window.BodyIQContent.fetchPdfFooterText();
+        if (custom) footerText = custom;
+      } catch (e) { /* fall back to default footer text */ }
+    }
+
+    const jsPDF = window.jspdf.jsPDF;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
+    const margin = 16;
+    const contentW = pageW - margin * 2;
+    let y = 0;
+
+    function categoryRGB(cat) {
+      if (cat === 'Underweight') return [91, 124, 153];
+      if (cat === 'Normal weight') return [107, 143, 78];
+      if (cat === 'Overweight') return [201, 154, 60];
+      return [155, 59, 50];
+    }
+
+    function drawContinuationHeader() {
+      doc.setFillColor(43, 38, 32);
+      doc.rect(0, 0, pageW, 16, 'F');
+      doc.setTextColor(251, 247, 238);
+      doc.setFont(undefined, 'bold'); doc.setFontSize(11);
+      doc.text('BODY IQ', margin, 10.5);
+      doc.setFont(undefined, 'normal'); doc.setFontSize(9);
+      doc.setTextColor(200, 190, 170);
+      doc.text('Health Report (continued)', pageW - margin, 10.5, { align: 'right' });
+      y = 26;
+    }
+
+    function checkBreak(h) {
+      if (y + h > pageH - 22) { doc.addPage(); drawContinuationHeader(); }
+    }
+
+    function sectionLabel(title) {
+      checkBreak(12);
+      doc.setFont(undefined, 'bold'); doc.setFontSize(10.5);
+      const tw = doc.getTextWidth(title.toUpperCase());
+      doc.setFillColor(169, 134, 62);
+      doc.roundedRect(margin, y - 5.5, tw + 8, 7.5, 1.2, 1.2, 'F');
+      doc.setTextColor(251, 247, 238);
+      doc.text(title.toUpperCase(), margin + 4, y);
+      y += 10;
+      doc.setFont(undefined, 'normal');
+      doc.setTextColor(43, 38, 32);
+    }
+
+    function keyValue(label, value) {
+      checkBreak(7);
+      doc.setFontSize(10);
+      doc.setTextColor(107, 99, 85);
+      doc.text(label, margin, y);
+      doc.setTextColor(43, 38, 32);
+      doc.setFont(undefined, 'bold');
+      doc.text(String(value), pageW - margin, y, { align: 'right' });
+      doc.setFont(undefined, 'normal');
+      y += 6.5;
+    }
+
+    function stackedField(label, value) {
+      checkBreak(14);
+      doc.setFont(undefined, 'bold'); doc.setFontSize(8.5); doc.setTextColor(169, 134, 62);
+      doc.text(label.toUpperCase(), margin, y);
+      y += 5;
+      doc.setFont(undefined, 'normal'); doc.setFontSize(10.5); doc.setTextColor(43, 38, 32);
+      const lines = doc.splitTextToSize(String(value), contentW);
+      checkBreak(lines.length * 5.5 + 4);
+      doc.text(lines, margin, y);
+      y += lines.length * 5.5 + 6;
+    }
+
+    // Header banner
+    doc.setFillColor(43, 38, 32);
+    doc.rect(0, 0, pageW, 40, 'F');
+    doc.setFillColor(169, 134, 62);
+    doc.rect(0, 40, pageW, 2, 'F');
+    doc.setTextColor(251, 247, 238);
+    doc.setFont(undefined, 'bold'); doc.setFontSize(20);
+    doc.text('Body IQ', margin, 20);
+    doc.setFont(undefined, 'normal'); doc.setFontSize(11);
+    doc.setTextColor(216, 206, 180);
+    doc.text('Health Report', margin, 29);
+    doc.setFontSize(9);
+    doc.setTextColor(200, 190, 170);
+    doc.text('Generated ' + new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }), pageW - margin, 20, { align: 'right' });
+    if (measurement.name) {
+      doc.setFont(undefined, 'bold'); doc.setFontSize(11); doc.setTextColor(251, 247, 238);
+      doc.text(measurement.name, pageW - margin, 29, { align: 'right' });
+    }
+    y = 52;
+
+    sectionLabel('Personal Information');
+    keyValue('Name', measurement.name || '\u2014');
+    keyValue('Age', measurement.age || '\u2014');
+    keyValue('Gender', measurement.gender ? (measurement.gender === 'male' ? 'Male' : 'Female') : '\u2014');
+    y += 4;
+
+    sectionLabel('Measurements');
+    keyValue('Height', measurement.heightCm.toFixed(1) + ' cm');
+    keyValue('Weight', measurement.weightKg.toFixed(1) + ' kg');
+    y += 4;
+
+    checkBreak(38);
+    const catColor = categoryRGB(measurement.category);
+    doc.setFillColor(242, 236, 220);
+    doc.roundedRect(margin, y, contentW, 32, 2, 2, 'F');
+    doc.setFillColor(catColor[0], catColor[1], catColor[2]);
+    doc.roundedRect(margin, y, 3, 32, 1, 1, 'F');
+    doc.setFont(undefined, 'bold'); doc.setFontSize(22); doc.setTextColor(43, 38, 32);
+    doc.text(measurement.bmiRounded, margin + 10, y + 15);
+    doc.setFontSize(9); doc.setFont(undefined, 'normal'); doc.setTextColor(107, 99, 85);
+    doc.text('BMI', margin + 10, y + 21);
+    doc.setFont(undefined, 'bold'); doc.setFontSize(12);
+    doc.setTextColor(catColor[0], catColor[1], catColor[2]);
+    doc.text(measurement.category, margin + 42, y + 13);
+    doc.setFont(undefined, 'normal'); doc.setFontSize(9); doc.setTextColor(107, 99, 85);
+    doc.text(doc.splitTextToSize('Healthy range for this height: ' + measurement.rangeText, contentW - 48), margin + 42, y + 20);
+    y += 32 + 8;
+
+    if (measurement.category === 'Underweight' || measurement.category === 'Obese') {
+      doc.setFont(undefined, 'italic'); doc.setFontSize(9); doc.setTextColor(107, 99, 85);
+      const geneticsLines = doc.splitTextToSize("Wondering why the number landed here? For a lot of people, genetics, bone structure, or family body type play a real role \u2014 sometimes more than diet or exercise do. This is one data point, not a verdict on your habits.", contentW);
+      checkBreak(geneticsLines.length * 4.6 + 6);
+      doc.text(geneticsLines, margin, y);
+      doc.setFont(undefined, 'normal');
+      y += geneticsLines.length * 4.6 + 8;
+    }
+
+    sectionLabel('Lifestyle Assessment');
+    stackedField('How much do you move in a typical day?', LABELS[assessment.activity] || assessment.activity);
+    stackedField('What are you hoping to do?', LABELS[assessment.goal] || assessment.goal);
+    stackedField('How would you describe the way you eat?', LABELS[assessment.eating] || assessment.eating);
+    stackedField('How often do you exercise in a week?', LABELS[assessment.exercise] || assessment.exercise);
+    stackedField('How much sleep do you usually get a night?', LABELS[assessment.sleep] || assessment.sleep);
+    y += 2;
+
+    if (measurement.bmr) {
+      sectionLabel('Estimated Calories');
+      const tdee = measurement.bmr * (ACTIVITY_MULTIPLIER[assessment.activity] || 1.2);
+      const loss = Math.max(Math.round(tdee - 500), 1200);
+      const gain = Math.round(tdee + 500);
+      const rows = [
+        ['Estimated BMR', Math.round(measurement.bmr) + ' kcal/day'],
+        ['Maintenance (TDEE)', Math.round(tdee) + ' kcal/day'],
+        ['Suggested \u2014 Weight Loss', '~' + loss + ' kcal/day'],
+        ['Suggested \u2014 Weight Gain', '~' + gain + ' kcal/day']
+      ];
+      checkBreak(rows.length * 8 + 6);
+      doc.setDrawColor(220, 208, 178);
+      doc.roundedRect(margin, y, contentW, rows.length * 8 + 4, 2, 2);
+      let ry = y + 7;
+      rows.forEach(function (r, i) {
+        doc.setFontSize(10); doc.setTextColor(43, 38, 32); doc.setFont(undefined, 'normal');
+        doc.text(r[0], margin + 5, ry);
+        doc.setFont(undefined, 'bold'); doc.setTextColor(155, 59, 50);
+        doc.text(r[1], pageW - margin - 5, ry, { align: 'right' });
+        if (i < rows.length - 1) {
+          doc.setDrawColor(230, 222, 200);
+          doc.line(margin + 5, ry + 2.5, pageW - margin - 5, ry + 2.5);
+        }
+        ry += 8;
+      });
+      y += rows.length * 8 + 4 + 8;
+      doc.setFont(undefined, 'italic'); doc.setFontSize(8); doc.setTextColor(107, 99, 85);
+      doc.text('Rough estimates from the Mifflin\u2013St Jeor formula \u2014 not a prescription.', margin, y);
+      doc.setFont(undefined, 'normal');
+      y += 10;
+    }
+
+    sectionLabel('Personalized Recommendations');
+    [
+      ['Nutrition', document.getElementById('recoNutrition').textContent],
+      ['Physical Activity', document.getElementById('recoActivity').textContent],
+      ['Sleep & Recovery', document.getElementById('recoSleep').textContent],
+      ['Hydration', document.getElementById('recoHydration').textContent],
+      ['Overall Lifestyle', document.getElementById('recoLifestyle').textContent]
+    ].forEach(function (item) {
+      doc.setFont(undefined, 'normal'); doc.setFontSize(9.5);
+      const lines = doc.splitTextToSize(item[1], contentW - 14);
+      const boxH = 8 + lines.length * 5 + 4;
+      checkBreak(boxH + 4);
+      doc.setFillColor(242, 236, 220);
+      doc.roundedRect(margin, y, contentW, boxH, 1.5, 1.5, 'F');
+      doc.setFillColor(169, 134, 62);
+      doc.roundedRect(margin, y, 2.2, boxH, 1, 1, 'F');
+      doc.setFont(undefined, 'bold'); doc.setFontSize(9); doc.setTextColor(169, 134, 62);
+      doc.text(item[0].toUpperCase(), margin + 7, y + 6.5);
+      doc.setFont(undefined, 'normal'); doc.setFontSize(9.5); doc.setTextColor(43, 38, 32);
+      doc.text(lines, margin + 7, y + 12.5);
+      y += boxH + 5;
+    });
+
+    function wellnessBar(label, value) {
+      checkBreak(12);
+      doc.setFont(undefined, 'normal'); doc.setFontSize(9.5); doc.setTextColor(43, 38, 32);
+      doc.text(label, margin, y);
+      doc.setFont(undefined, 'bold'); doc.setTextColor(155, 59, 50);
+      doc.text(String(value) + '/100', pageW - margin, y, { align: 'right' });
+      y += 3.5;
+      doc.setFillColor(230, 222, 200);
+      doc.roundedRect(margin, y, contentW, 3, 1.5, 1.5, 'F');
+      doc.setFillColor(169, 134, 62);
+      doc.roundedRect(margin, y, contentW * (Math.max(0, Math.min(100, value)) / 100), 3, 1.5, 1.5, 'F');
+      doc.setFont(undefined, 'normal');
+      y += 8.5;
+    }
+
+    const pdfScores = window.lastScores || computeWellnessScores(measurement, assessment);
+
+    sectionLabel('Wellness Snapshot');
+    wellnessBar('Weight Status', pdfScores.weight);
+    wellnessBar('Physical Activity', pdfScores.activity);
+    wellnessBar('Nutrition', pdfScores.nutrition);
+    wellnessBar('Sleep', pdfScores.sleep);
+    wellnessBar('Overall Wellness', pdfScores.overall);
+    y += 2;
+
+    sectionLabel('Wellness Score');
+    checkBreak(38);
+    doc.setFillColor(242, 236, 220);
+    doc.roundedRect(margin, y, contentW, 36, 2, 2, 'F');
+    doc.setFillColor(169, 134, 62);
+    doc.roundedRect(margin, y, 3, 36, 1, 1, 'F');
+    doc.setFont(undefined, 'bold'); doc.setFontSize(24); doc.setTextColor(43, 38, 32);
+    doc.text(String(pdfScores.overall), margin + 10, y + 18);
+    doc.setFontSize(8.5); doc.setFont(undefined, 'normal'); doc.setTextColor(107, 99, 85);
+    doc.text('OUT OF 100', margin + 10, y + 24);
+    doc.setFont(undefined, 'bold'); doc.setFontSize(11); doc.setTextColor(169, 134, 62);
+    doc.text(pdfScores.status.toUpperCase(), margin + 42, y + 13);
+    doc.setFont(undefined, 'normal'); doc.setFontSize(9); doc.setTextColor(107, 99, 85);
+    doc.text(doc.splitTextToSize(wellnessExplanation(pdfScores), contentW - 46), margin + 42, y + 20);
+    y += 36 + 8;
+
+    sectionLabel('Your Body Reflection');
+    (window.lastReflection || buildBodyReflection(measurement, assessment, pdfScores)).forEach(function (p) {
+      doc.setFont(undefined, 'italic'); doc.setFontSize(9.5); doc.setTextColor(43, 38, 32);
+      const lines = doc.splitTextToSize(p, contentW);
+      checkBreak(lines.length * 4.6 + 6);
+      doc.text(lines, margin, y);
+      y += lines.length * 4.6 + 6;
+    });
+    doc.setFont(undefined, 'normal');
+    y += 2;
+
+    sectionLabel('Privacy First');
+    doc.setFont(undefined, 'normal'); doc.setFontSize(9); doc.setTextColor(107, 99, 85);
+    const privacyIntro = doc.splitTextToSize('Body IQ was built without accounts or ads, and keeps data collection to the bare minimum needed to know the tool is actually useful:', contentW);
+    checkBreak(privacyIntro.length * 4.4 + 4);
+    doc.text(privacyIntro, margin, y);
+    y += privacyIntro.length * 4.4 + 3;
+    [
+      'No account or sign-up required',
+      'No advertisements, ever',
+      'No cookies, fingerprinting, or third-party trackers',
+      'Your BMI, calorie, and recommendation calculations happen locally, in your browser, and stay there',
+      'We record anonymous, aggregate usage counts (visits, BMI calculations run) \u2014 never your name, measurements, goals, or results',
+      'Your personal results are never uploaded anywhere unless you choose to download or share them yourself'
+    ].forEach(function (point) {
+      const lines = doc.splitTextToSize(point, contentW - 8);
+      checkBreak(Math.max(lines.length * 4.4, 5.5));
+      doc.setTextColor(107, 143, 78); doc.setFont(undefined, 'bold'); doc.setFontSize(9);
+      doc.text('\u2713', margin, y);
+      doc.setTextColor(107, 99, 85); doc.setFont(undefined, 'normal');
+      doc.text(lines, margin + 6, y);
+      y += Math.max(lines.length * 4.4, 5.5);
+    });
+    y += 4;
+
+    checkBreak(30);
+    doc.setDrawColor(216, 206, 180);
+    doc.line(margin, y, pageW - margin, y);
+    y += 6;
+    doc.setFont(undefined, 'bold'); doc.setFontSize(9); doc.setTextColor(107, 99, 85);
+    doc.text('MEDICAL DISCLAIMER', margin, y);
+    y += 5;
+    doc.setFont(undefined, 'italic'); doc.setFontSize(8.3); doc.setTextColor(107, 99, 85);
+    const discLines = doc.splitTextToSize('Body IQ is an educational wellness tool designed to provide general health information. BMI, calorie estimates, and personalized recommendations are general guidance only and are not medical advice, diagnosis, or treatment. BMI is only one indicator of health and may not accurately represent body composition for everyone, including athletes, pregnant individuals, older adults, or people with high muscle mass. Always consult a qualified healthcare professional before making significant changes to your diet, exercise routine, or lifestyle.', contentW);
+    checkBreak(discLines.length * 4.2);
+    doc.text(discLines, margin, y);
+
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let p = 1; p <= pageCount; p++) {
+      doc.setPage(p);
+      doc.setDrawColor(216, 206, 180);
+      doc.line(margin, pageH - 16, pageW - margin, pageH - 16);
+      doc.setFont(undefined, 'italic'); doc.setFontSize(8); doc.setTextColor(169, 134, 62);
+      doc.text(footerText, pageW / 2, pageH - 10, { align: 'center' });
+      doc.setFont(undefined, 'normal'); doc.setTextColor(150, 140, 120);
+      doc.text('Page ' + p + ' of ' + pageCount, pageW - margin, pageH - 10, { align: 'right' });
+    }
+
+    doc.save('body-iq-health-report.pdf');
+    if (window.BodyIQAnalytics) window.BodyIQAnalytics.trackReportDownloaded();
+  }
+
+  function startOver() {
+    clearFlow();
+    window.location.href = 'index.html';
+  }
+</script>
+
+</body>
+</html>

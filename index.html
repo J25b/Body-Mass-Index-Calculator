@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Body IQ — Interactive Preview</title>
 <script>
 (function () {
   try {
@@ -13,207 +12,23 @@
   } catch (e) {}
 })();
 </script>
+<title>Body IQ — How's Your Build?</title>
+<meta name="description" content="Body IQ: a BMI gauge styled like a tailor's tape measure. Step one of three — enter your measurements to get started.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Karla:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --linen: #E7E0CE; --linen-dark: #DCD3BC; --card: #FBF7EE; --ink: #2B2620; --ink-soft: #6B6355;
-    --thread: #9B3B32; --brass: #A9863E; --under: #5B7C99; --normal: #6B8F4E; --over: #C99A3C; --obese: #9B3B32;
-    --divider: #D8CEB4; --divider-dashed: #C9BE9E; --accent-bg: #F2ECDC;
-    color-scheme: light;
-  }
-  [data-theme="dark"] {
-    --linen: #26221E; --linen-dark: #3A342C; --card: #34302A; --ink: #F2ECDD; --ink-soft: #BFB49F;
-    --thread: #C25C4E; --brass: #C9A46B; --under: #82A6CC; --normal: #8FBE72; --over: #E0B15C; --obese: #C25C4E;
-    --divider: #4E4740; --divider-dashed: #554D43; --accent-bg: #3F3A30;
-    color-scheme: dark;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
-    padding: 60px 20px; background-color: var(--linen); transition: background-color 0.35s ease;
-    background-image:
-      repeating-linear-gradient(45deg, rgba(43,38,32,0.02) 0px, rgba(43,38,32,0.02) 1px, transparent 1px, transparent 7px),
-      repeating-linear-gradient(-45deg, rgba(43,38,32,0.02) 0px, rgba(43,38,32,0.02) 1px, transparent 1px, transparent 7px);
-  }
-  [data-theme="dark"] body {
-    background-image:
-      repeating-linear-gradient(45deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 7px),
-      repeating-linear-gradient(-45deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 7px);
-  }
-  .card, .card * { transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease; }
-  .card {
-    position: relative; width: 100%; max-width: 420px; background: var(--card); border-radius: 6px;
-    padding: 40px 32px 30px; box-shadow: 0 24px 44px rgba(43,38,32,0.20), 0 2px 6px rgba(43,38,32,0.09);
-    transform: rotate(-0.8deg);
-  }
-  .theme-toggle {
-    position: absolute; top: 14px; right: 14px; background: transparent; border: 1.5px dashed var(--divider-dashed);
-    border-radius: 20px; padding: 4px 11px; font-family: 'Karla', sans-serif; font-size: 10.5px; font-weight: 700;
-    letter-spacing: 0.02em; color: var(--ink-soft); cursor: pointer; white-space: nowrap;
-  }
-  .theme-toggle:hover { border-color: var(--thread); color: var(--thread); }
-  .tag-loop { position: absolute; top: -24px; left: 50%; transform: translateX(-50%) rotate(-0.8deg); }
-  .brand-name { text-align: center; font-family: 'Karla', sans-serif; font-weight: 800; font-size: 13px; letter-spacing: 0.2em; color: var(--ink); margin-top: 10px; }
-  .eyebrow { font-family: 'Karla', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; color: var(--brass); text-align: center; margin-top: 4px; }
-  h1 { font-family: 'Fraunces', serif; font-style: italic; font-weight: 600; font-size: clamp(24px, 6vw, 29px); color: var(--ink); text-align: center; margin: 8px 0 6px; line-height: 1.15; }
-  .subtitle { font-family: 'Karla', sans-serif; font-size: 13px; color: var(--ink-soft); text-align: center; margin: 0 0 28px; line-height: 1.5; }
-  .intro-note { font-family: 'Karla', sans-serif; font-style: italic; font-size: 11.5px; color: var(--ink-soft); text-align: center; margin: -16px 0 26px; line-height: 1.5; }
-
-  .screen { display: none; }
-  .screen.active { display: block; animation: settle 0.4s ease; }
-  @keyframes settle { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-  .field label { display: block; font-family: 'Karla', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 4px; }
-  .field .optional { font-weight: 400; text-transform: none; letter-spacing: 0; font-style: italic; color: #B9AC85; font-size: 10px; margin-left: 3px; }
-  .field label.question-label { text-transform: none; letter-spacing: 0; font-size: 13.5px; font-weight: 600; color: var(--ink); font-family: 'Fraunces', serif; font-style: italic; margin-bottom: 6px; line-height: 1.35; }
-  .name-field { margin-bottom: 22px; }
-  .fields-row { display: flex; gap: 20px; flex-wrap: wrap; }
-  .fields-row + .fields-row { margin-top: 20px; }
-  .fields-row .field { flex: 1; min-width: 110px; }
-  .stacked-field { margin-bottom: 18px; }
-
-  .input-row { display: flex; align-items: center; gap: 8px; border-bottom: 2px solid var(--divider); transition: border-color 0.2s ease; padding-bottom: 2px; }
-  .input-row:focus-within { border-bottom-color: var(--thread); }
-  .input-row input, .input-row select {
-    flex: 1; width: 100%; min-width: 0; border: none; background: transparent; padding: 7px 2px;
-    font-family: 'Karla', sans-serif; font-size: 17px; color: var(--ink); outline: none;
-  }
-  .input-row input::placeholder { color: #BEB49B; }
-  .input-row select { cursor: pointer; }
-  input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-  input[type=number] { -moz-appearance: textfield; }
-
-  .unit-toggle {
-    font-family: 'Karla', sans-serif; font-size: 11.5px; font-weight: 700; letter-spacing: 0.03em; color: var(--ink-soft);
-    background: transparent; border: 1.5px dashed var(--divider-dashed); border-radius: 3px; padding: 4px 8px; cursor: pointer;
-    white-space: nowrap; margin-bottom: 6px; transition: color 0.15s ease, border-color 0.15s ease;
-  }
-  .unit-toggle:hover { color: var(--thread); border-color: var(--thread); }
-
-  .error-note { display: none; margin: 14px 2px 0; font-family: 'Fraunces', serif; font-style: italic; font-size: 13.5px; color: var(--thread); transform: rotate(-1deg); }
-  .error-note.show { display: block; }
-
-  .action-row { margin-top: 26px; }
-  .measure-btn {
-    display: block; width: 100%; padding: 13px; background: var(--thread); color: var(--card); border: none;
-    border-radius: 4px; font-family: 'Karla', sans-serif; font-weight: 700; font-size: 15px; letter-spacing: 0.03em;
-    cursor: pointer; text-align: center; transition: background 0.2s ease, transform 0.15s ease;
-  }
-  .measure-btn:hover { background: #7E2E27; }
-  .measure-btn:active { transform: scale(0.97); }
-
-  .text-link {
-    display: block; margin: 12px auto 0; background: none; border: none; font-family: 'Karla', sans-serif;
-    font-size: 12px; color: var(--ink-soft); text-decoration: underline; text-underline-offset: 2px; cursor: pointer;
-    padding: 2px; text-align: center; width: 100%;
-  }
-  .text-link:hover { color: var(--thread); }
-
-  .result { display: none; }
-  .result.show { display: block; animation: settle 0.45s ease; }
-
-  .perf-label { text-align: center; font-family: 'Karla', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-soft); opacity: 0.55; margin: 28px 0 5px; }
-  .perf-line { border-top: 1.5px dashed var(--divider-dashed); margin-bottom: 22px; }
-  .tape-eyebrow { font-family: 'Karla', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; color: var(--ink-soft); margin-bottom: 6px; }
-  .tape-numbers { display: flex; justify-content: space-between; font-family: 'Karla', sans-serif; font-size: 10px; color: var(--ink-soft); padding: 0 1px; margin-bottom: 3px; }
-  .tape-wrap { position: relative; padding-top: 30px; }
-  .tape {
-    position: relative; height: 32px; background: #F2E9D0; border-radius: 3px; box-shadow: inset 0 0 0 1px #DCD0AA;
-    background-image: repeating-linear-gradient(to right, #C9B888 0, #C9B888 1px, transparent 1px, transparent 8.33%);
-    background-repeat: no-repeat;
-  }
-  .tape-zones { position: absolute; left: 0; right: 0; bottom: 0; height: 6px; display: flex; border-radius: 0 0 3px 3px; overflow: hidden; }
-  .tape-zones span { display: block; height: 100%; }
-  .zone-under { width: 14%; background: var(--under); }
-  .zone-normal { width: 26%; background: var(--normal); }
-  .zone-over { width: 20%; background: var(--over); }
-  .zone-obese { width: 40%; background: var(--obese); }
-  .pin { position: absolute; top: -14px; width: 2px; height: 44px; background: var(--thread); left: 0%; transform: translateX(-50%); transition: left 0.6s cubic-bezier(.2,.8,.2,1); }
-  .pin::before { content: ""; position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 12px; height: 12px; border-radius: 50%; background: var(--thread); box-shadow: 0 2px 3px rgba(43,38,32,0.35); }
-  .pin-label {
-    position: absolute; top: -44px; left: 0%; transform: translateX(-50%); background: var(--ink); color: var(--card);
-    font-family: 'Karla', sans-serif; font-weight: 700; font-size: 13px; padding: 3px 9px; border-radius: 3px;
-    white-space: nowrap; transition: left 0.6s cubic-bezier(.2,.8,.2,1);
-  }
-  .pin-label::after { content: ""; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 4px solid var(--ink); }
-
-  .result-category { margin-top: 36px; font-family: 'Fraunces', serif; font-style: italic; font-weight: 600; font-size: clamp(18px, 4.6vw, 21px); line-height: 1.35; color: var(--ink); }
-  .trend-note { display: none; margin: 2px 0 0; font-family: 'Karla', sans-serif; font-size: 12px; font-weight: 700; color: var(--ink-soft); }
-  .trend-note.show { display: block; }
-  .trend-note.up { color: var(--thread); }
-  .trend-note.down { color: var(--normal); }
-  .result-note { margin: 9px 0 0; font-family: 'Karla', sans-serif; font-size: 12.5px; color: var(--ink-soft); line-height: 1.55; }
-  .healthy-range { margin: 12px 0 0; font-family: 'Karla', sans-serif; font-size: 12.5px; color: var(--ink); background: var(--accent-bg); border-left: 3px solid var(--brass); padding: 8px 10px; line-height: 1.5; }
-  .healthy-range strong { color: var(--ink); }
-  .genetics-note { display: none; margin: 12px 0 0; font-family: 'Karla', sans-serif; font-style: italic; font-size: 12.5px; color: var(--ink); background: var(--accent-bg); border-left: 3px solid var(--brass); padding: 8px 10px; line-height: 1.55; }
-  .genetics-note.show { display: block; }
-
-  .copy-btn {
-    display: block; width: 100%; margin-top: 16px; padding: 10px; background: transparent; border: 1.5px dashed var(--divider-dashed);
-    border-radius: 4px; font-family: 'Karla', sans-serif; font-weight: 700; font-size: 12.5px; letter-spacing: 0.02em;
-    color: var(--ink-soft); cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease;
-  }
-  .copy-btn:hover { border-color: var(--thread); color: var(--thread); }
-
-  .recap-line { font-family: 'Fraunces', serif; font-style: italic; font-size: 15px; color: var(--ink); text-align: center; margin: 0 0 26px; line-height: 1.4; }
-
-  .reco-greeting { font-family: 'Fraunces', serif; font-style: italic; font-size: 15px; color: var(--ink); margin: 0 0 16px; line-height: 1.45; }
-  .reco-card { background: var(--accent-bg); border-left: 3px solid var(--brass); padding: 10px 12px; margin-bottom: 10px; line-height: 1.55; }
-  .reco-card h3 { margin: 0 0 4px; font-family: 'Karla', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--brass); }
-  .reco-card p { margin: 0; font-family: 'Karla', sans-serif; font-size: 12.5px; color: var(--ink); }
-
-  .calorie-row { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-family: 'Karla', sans-serif; font-size: 12.5px; color: var(--ink); padding: 7px 0; border-bottom: 1px dashed var(--divider-dashed); }
-  .calorie-row:last-child { border-bottom: none; }
-  .calorie-row strong { color: var(--thread); font-size: 13.5px; white-space: nowrap; }
-  .calorie-caveat { margin: 10px 0 0; font-family: 'Karla', sans-serif; font-style: italic; font-size: 11px; color: var(--ink-soft); }
-  .calorie-missing { display: none; font-family: 'Karla', sans-serif; font-size: 12.5px; color: var(--ink-soft); font-style: italic; margin: 10px 0 0; }
-
-  .notice-box { margin-top: 20px; padding-top: 14px; border-top: 1px dashed var(--divider-dashed); }
-  .notice-box h4 { margin: 0 0 6px; font-family: 'Karla', sans-serif; font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); }
-  .notice-box p { margin: 0; font-family: 'Karla', sans-serif; font-size: 11.5px; color: var(--ink-soft); line-height: 1.6; }
-
-  .history-section { display: none; margin-top: 6px; }
-  .history-list { list-style: none; margin: 0 0 8px; padding: 0; }
-  .history-list li { display: flex; align-items: center; gap: 8px; font-family: 'Karla', sans-serif; font-size: 12.5px; color: var(--ink); padding: 7px 0; border-bottom: 1px dashed var(--divider-dashed); }
-  .history-list li:last-child { border-bottom: none; }
-  .history-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .history-name { font-weight: 700; }
-  .history-bmi { color: var(--ink-soft); }
-  .history-meta { margin-left: auto; color: var(--ink-soft); font-size: 11px; white-space: nowrap; }
-  .history-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 2px; }
-  .clear-history { background: none; border: none; font-family: 'Karla', sans-serif; font-size: 11.5px; color: var(--ink-soft); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; padding: 0; }
-  .clear-history:hover { color: var(--thread); }
-  .history-privacy { font-family: 'Karla', sans-serif; font-style: italic; font-size: 10.5px; color: var(--ink-soft); opacity: 0.7; margin: 0; }
-
-  .wellness-wheel-wrap { display: flex; justify-content: center; margin: 4px 0 14px; }
-  .wellness-insight { font-family: 'Karla', sans-serif; font-size: 12.5px; color: var(--ink); background: var(--accent-bg); border-left: 3px solid var(--brass); padding: 9px 11px; line-height: 1.6; margin-bottom: 6px; }
-  .wellness-insight strong { color: var(--brass); }
-  .score-box { text-align: center; margin: 6px 0 14px; }
-  .score-number { font-family: 'Fraunces', serif; font-weight: 600; font-size: 52px; color: var(--ink); line-height: 1; }
-  .score-number span { font-size: 20px; color: var(--ink-soft); font-weight: 400; }
-  .score-status { display: inline-block; margin-top: 8px; font-family: 'Karla', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; }
-  .score-status.excellent { background: rgba(107,143,78,0.18); color: var(--normal); }
-  .score-status.good { background: rgba(169,134,62,0.18); color: var(--brass); }
-  .score-status.fair { background: rgba(201,154,60,0.2); color: var(--over); }
-  .score-status.needs { background: rgba(155,59,50,0.16); color: var(--thread); }
-  .score-explanation { font-family: 'Karla', sans-serif; font-size: 12.5px; color: var(--ink-soft); line-height: 1.6; text-align: center; margin: 12px 0 0; }
-  .reflection-block p { font-family: 'Fraunces', serif; font-style: italic; font-size: 14px; color: var(--ink); line-height: 1.65; margin: 0 0 14px; }
-  .reflection-block p:last-child { margin-bottom: 0; }
-  .privacy-first-list { list-style: none; margin: 8px 0 0; padding: 0; }
-  .privacy-first-list li { position: relative; padding-left: 18px; font-family: 'Karla', sans-serif; font-size: 11.5px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 6px; }
-  .privacy-first-list li::before { content: "\2713"; position: absolute; left: 0; top: 0; color: var(--normal); font-weight: 700; }
-
-  .reveal { opacity: 0; animation: settle 0.55s ease forwards; }
-  .reveal-1 { animation-delay: 0.05s; } .reveal-2 { animation-delay: 0.15s; } .reveal-3 { animation-delay: 0.25s; } .reveal-4 { animation-delay: 0.35s; }
-  .reveal-5 { animation-delay: 0.45s; } .reveal-6 { animation-delay: 0.55s; } .reveal-7 { animation-delay: 0.65s; } .reveal-8 { animation-delay: 0.75s; }
-
-  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } .reveal { opacity: 1; } }
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
+<div class="page-stack">
+<div class="maintenance-banner" id="maintenanceBanner" style="display:none;">
+  <p>Body IQ is currently undergoing maintenance. Some features may be temporarily unavailable.</p>
+</div>
+<div class="announcement-banner" id="announcementBanner" style="display:none;">
+  <p id="announcementText"></p>
+  <button type="button" id="announcementDismiss" aria-label="Dismiss announcement">×</button>
+</div>
 <div class="card">
   <button type="button" class="theme-toggle" id="themeToggle" onclick="toggleTheme()">Dark</button>
   <svg class="tag-loop" width="40" height="46" viewBox="0 0 40 46">
@@ -221,448 +36,180 @@
     <circle cx="20" cy="34" r="7" fill="#FBF7EE" stroke="#A9863E" stroke-width="2.5"/>
     <circle cx="20" cy="34" r="3" fill="#DCD3BC"/>
   </svg>
+
   <div class="brand-name">BODY IQ</div>
+  <div class="eyebrow">STEP 1 OF 3 — MEASUREMENTS</div>
+  <h1>How's your build?</h1>
+  <p class="subtitle">Two numbers, one rough read — not a verdict.</p>
+  <p class="intro-note">This works best if you already know your height and weight — think of it as a calculator, not a measuring tool.</p>
 
-  <!-- SCREEN 1: MEASUREMENTS -->
-  <div class="screen active" id="screen-measure">
-    <div class="eyebrow">STEP 1 OF 3 — MEASUREMENTS</div>
-    <h1>How's your build?</h1>
-    <p class="subtitle">Two numbers, one rough read — not a verdict.</p>
-    <p class="intro-note">This works best if you already know your height and weight — think of it as a calculator, not a measuring tool.</p>
-
-    <div class="field name-field">
-      <label for="name">Name</label>
-      <div class="input-row"><input type="text" id="name" placeholder="What should I call you?" autocomplete="off"></div>
+  <div class="field name-field">
+    <label for="name">Name</label>
+    <div class="input-row">
+      <input type="text" id="name" placeholder="What should I call you?" autocomplete="off">
     </div>
+  </div>
 
-    <div class="fields-row">
-      <div class="field">
-        <label for="weight">Weight</label>
-        <div class="input-row">
-          <input type="number" id="weight" placeholder="70" step="0.1" min="0">
-          <button type="button" class="unit-toggle" id="weightUnitBtn" onclick="toggleWeightUnit()">kg</button>
-        </div>
-      </div>
-      <div class="field">
-        <label for="height">Height</label>
-        <div class="input-row">
-          <input type="number" id="height" placeholder="175" step="0.1" min="0">
-          <button type="button" class="unit-toggle" id="heightUnitBtn" onclick="toggleHeightUnit()">cm</button>
-        </div>
+  <div class="fields-row">
+    <div class="field">
+      <label for="weight">Weight</label>
+      <div class="input-row">
+        <input type="number" id="weight" placeholder="70" step="0.1" min="0">
+        <button type="button" class="unit-toggle" id="weightUnitBtn" onclick="toggleWeightUnit()">kg</button>
       </div>
     </div>
-
-    <div class="fields-row">
-      <div class="field">
-        <label for="age">Age <span class="optional">optional</span></label>
-        <div class="input-row"><input type="number" id="age" placeholder="30" min="1" max="120"></div>
-      </div>
-      <div class="field">
-        <label for="gender">Sex <span class="optional">optional</span></label>
-        <div class="input-row">
-          <select id="gender"><option value="">—</option><option value="male">Male</option><option value="female">Female</option></select>
-        </div>
-      </div>
-    </div>
-
-    <p class="error-note" id="error">That doesn't look like a number I can measure — try again?</p>
-
-    <div class="action-row">
-      <button class="measure-btn" onclick="calculateBMI()">Measure me</button>
-      <button type="button" class="text-link" onclick="startOver()">Start over</button>
-    </div>
-
-    <div class="result" id="result">
-      <p class="perf-label">tear here</p>
-      <div class="perf-line"></div>
-      <div class="tape-eyebrow">BMI</div>
-      <div class="tape-numbers"><span>15</span><span>20</span><span>25</span><span>30</span><span>35</span><span>40</span></div>
-      <div class="tape-wrap">
-        <div class="tape">
-          <div class="pin" id="pin"></div>
-          <div class="pin-label" id="pinLabel"></div>
-          <div class="tape-zones"><span class="zone-under"></span><span class="zone-normal"></span><span class="zone-over"></span><span class="zone-obese"></span></div>
-        </div>
-      </div>
-      <p class="result-category"><span id="possessive">Your</span> build is in the <span id="categoryWord"></span> range.</p>
-      <p class="trend-note" id="trendNote"></p>
-      <p class="result-note">BMI doesn't know about muscle, bone, or you. Read it as a nudge, not a grade.</p>
-      <p class="healthy-range" id="healthyRange"></p>
-      <button type="button" class="copy-btn" id="copyBtn" onclick="copyResult()">Copy result</button>
-      <button type="button" class="measure-btn" style="margin-top:18px;" onclick="continueToCheckin()">Continue to Personal Check-in →</button>
-
-      <div class="history-section" id="historySection">
-        <p class="perf-label">past measurements</p>
-        <div class="perf-line"></div>
-        <ul class="history-list" id="historyList"></ul>
-        <div class="history-footer">
-          <p class="history-privacy">kept on this device only</p>
-          <button type="button" class="clear-history" onclick="clearHistory()">Clear</button>
-        </div>
+    <div class="field">
+      <label for="height">Height</label>
+      <div class="input-row">
+        <input type="number" id="height" placeholder="175" step="0.1" min="0">
+        <button type="button" class="unit-toggle" id="heightUnitBtn" onclick="toggleHeightUnit()">cm</button>
       </div>
     </div>
   </div>
 
-  <!-- SCREEN 2: CHECK-IN -->
-  <div class="screen" id="screen-checkin">
-    <div class="eyebrow">STEP 2 OF 3 — PERSONAL CHECK-IN</div>
-    <h1>Let's personalize this</h1>
-    <p class="subtitle">A few quick questions, then we'll gather everything together.</p>
-
-    <p class="recap-line" id="recapLine"></p>
-
-    <div class="field stacked-field">
-      <label for="activityLevel" class="question-label">How much do you move in a typical day?</label>
+  <div class="fields-row">
+    <div class="field">
+      <label for="age">Age <span class="optional">optional</span></label>
       <div class="input-row">
-        <select id="activityLevel"><option value="">Choose one</option><option value="sedentary">I mostly sit or stay in one place all day</option><option value="light">I move around a little here and there</option><option value="moderate">I'm fairly active most days</option><option value="active">I'm on the move constantly</option></select>
+        <input type="number" id="age" placeholder="30" min="1" max="120">
       </div>
     </div>
-    <div class="field stacked-field">
-      <label for="goal" class="question-label">What are you hoping to do?</label>
+    <div class="field">
+      <label for="gender">Sex <span class="optional">optional</span></label>
       <div class="input-row">
-        <select id="goal"><option value="">Choose one</option><option value="lose">I want to lose weight</option><option value="gain">I want to gain weight</option><option value="maintain">I want to stay around where I am</option><option value="improve">I just want to feel healthier overall</option></select>
+        <select id="gender">
+          <option value="">—</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
       </div>
     </div>
-    <div class="field stacked-field">
-      <label for="eating" class="question-label">How would you describe the way you eat?</label>
-      <div class="input-row">
-        <select id="eating"><option value="">Choose one</option><option value="healthy">I eat pretty healthy, most of the time</option><option value="mixed">It's a mix — some healthy, some not</option><option value="processed">Mostly fast food or processed meals</option></select>
-      </div>
-    </div>
-    <div class="field stacked-field">
-      <label for="exercise" class="question-label">How often do you exercise in a week?</label>
-      <div class="input-row">
-        <select id="exercise"><option value="">Choose one</option><option value="never">Rarely or never</option><option value="1-2">A day or two a week</option><option value="3-5">A solid few days a week</option><option value="daily">Pretty much every day</option></select>
-      </div>
-    </div>
-    <div class="field stacked-field">
-      <label for="sleep" class="question-label">How much sleep do you usually get a night?</label>
-      <div class="input-row">
-        <select id="sleep"><option value="">Choose one</option><option value="less6">Not much — under 6 hours</option><option value="6-8">A decent amount — 6 to 8 hours</option><option value="more8">Plenty — more than 8 hours</option></select>
-      </div>
-    </div>
-
-    <p class="error-note" id="assessmentError">Please answer each question so I can tailor this properly.</p>
-
-    <button type="button" class="measure-btn" onclick="generateResults()">Generate My Health Recommendations</button>
-    <button type="button" class="text-link" onclick="goToScreen('screen-measure')">← Back to measurements</button>
   </div>
 
-  <!-- SCREEN 3: RESULTS -->
-  <div class="screen" id="screen-results">
-    <div class="eyebrow">STEP 3 OF 3 — YOUR RESULTS</div>
-    <h1>Here's everything, together</h1>
-    <p class="subtitle">Your measurements and check-in, gathered in one place.</p>
+  <p class="error-note" id="error">That doesn't look like a number I can measure — try again?</p>
 
-    <div class="reveal reveal-1">
-      <div class="tape-eyebrow">BMI</div>
-      <div class="tape-numbers"><span>15</span><span>20</span><span>25</span><span>30</span><span>35</span><span>40</span></div>
-      <div class="tape-wrap">
-        <div class="tape">
-          <div class="pin" id="finalPin"></div>
-          <div class="pin-label" id="finalPinLabel"></div>
-          <div class="tape-zones"><span class="zone-under"></span><span class="zone-normal"></span><span class="zone-over"></span><span class="zone-obese"></span></div>
+  <div class="action-row">
+    <button class="measure-btn" onclick="calculateBMI()">Measure me</button>
+    <button type="button" class="text-link" onclick="resetForm()">Start over</button>
+  </div>
+
+  <div class="result" id="result">
+    <p class="perf-label">tear here</p>
+    <div class="perf-line"></div>
+
+    <div class="tape-eyebrow">BMI</div>
+    <div class="tape-numbers">
+      <span>15</span><span>20</span><span>25</span><span>30</span><span>35</span><span>40</span>
+    </div>
+    <div class="tape-wrap">
+      <div class="tape">
+        <div class="pin" id="pin"></div>
+        <div class="pin-label" id="pinLabel"></div>
+        <div class="tape-zones">
+          <span class="zone-under"></span><span class="zone-normal"></span><span class="zone-over"></span><span class="zone-obese"></span>
         </div>
       </div>
-      <p class="result-category"><span id="finalPossessive">Your</span> build is in the <span id="finalCategoryWord"></span> range.</p>
-      <p class="result-note">BMI doesn't know about muscle, bone, or you. Read it as a nudge, not a grade.</p>
-      <p class="healthy-range" id="finalHealthyRange"></p>
-      <p class="genetics-note" id="geneticsNote"></p>
     </div>
 
-    <div class="reveal reveal-2">
-      <p class="perf-label">for you</p>
-      <div class="perf-line"></div>
-      <p class="reco-greeting" id="recoGreeting"></p>
-      <div class="reco-card"><h3>Nutrition</h3><p id="recoNutrition"></p></div>
-      <div class="reco-card"><h3>Physical Activity</h3><p id="recoActivity"></p></div>
-      <div class="reco-card"><h3>Sleep &amp; Recovery</h3><p id="recoSleep"></p></div>
-      <div class="reco-card"><h3>Hydration</h3><p id="recoHydration"></p></div>
-      <div class="reco-card"><h3>Overall Lifestyle</h3><p id="recoLifestyle"></p></div>
-    </div>
+    <p class="result-category">
+      <span id="possessive">Your</span> build is in the <span id="categoryWord"></span> range.
+    </p>
+    <p class="trend-note" id="trendNote"></p>
+    <p class="result-note">BMI doesn't know about muscle, bone, or you. Read it as a nudge, not a grade.</p>
 
-    <div class="reveal reveal-3">
-      <p class="perf-label">daily energy</p>
+    <p class="healthy-range" id="healthyRange"></p>
+
+    <button type="button" class="copy-btn" id="copyBtn" onclick="copyResult()">Copy result</button>
+
+    <button type="button" class="measure-btn" style="margin-top:18px;" onclick="continueToCheckin()">Continue to Personal Check-in →</button>
+
+    <div class="history-section" id="historySection">
+      <p class="perf-label">past measurements</p>
       <div class="perf-line"></div>
-      <div id="calorieSection">
-        <div id="calorieGrid"></div>
-        <p class="calorie-caveat">Rough estimates from the Mifflin–St Jeor formula — not a prescription.</p>
+      <ul class="history-list" id="historyList"></ul>
+      <div class="history-footer">
+        <p class="history-privacy">kept on this device only</p>
+        <button type="button" class="clear-history" id="clearHistoryBtn" onclick="clearHistory()">Clear</button>
       </div>
-      <p class="calorie-missing" id="calorieMissing">Add your age and sex on Step 1, then run through the flow again, to unlock calorie estimates.</p>
-    </div>
-
-    <div class="reveal reveal-4">
-      <p class="perf-label">wellness snapshot</p>
-      <div class="perf-line"></div>
-      <div class="wellness-wheel-wrap" id="wellnessWheel"></div>
-      <p class="wellness-insight" id="wellnessInsightText"></p>
-    </div>
-
-    <div class="reveal reveal-5">
-      <p class="perf-label">wellness score</p>
-      <div class="perf-line"></div>
-      <div class="score-box">
-        <div class="score-number" id="scoreNumber">—<span>/100</span></div>
-        <div class="score-status" id="scoreStatus"></div>
-      </div>
-      <p class="score-explanation" id="scoreExplanation"></p>
-    </div>
-
-    <div class="reveal reveal-6">
-      <p class="perf-label">your body reflection</p>
-      <div class="perf-line"></div>
-      <div class="reflection-block" id="reflectionBlock"></div>
-    </div>
-
-    <div class="reveal reveal-7">
-      <button type="button" class="copy-btn" id="pdfBtn" onclick="downloadReport()">Download Health Report</button>
-    </div>
-
-    <div class="reveal reveal-8">
-      <div class="notice-box">
-        <h4>Privacy First</h4>
-        <p>Body IQ was built without accounts or ads, and keeps data collection to the bare minimum needed to know the tool is actually useful. Here's what that means in practice:</p>
-        <ul class="privacy-first-list">
-          <li>No account or sign-up required</li>
-          <li>No advertisements, ever</li>
-          <li>No cookies, fingerprinting, or third-party trackers</li>
-          <li>Your BMI, calorie, and recommendation calculations happen locally, in your browser, and stay there</li>
-          <li>We record anonymous, aggregate usage counts (like how many people visited, and how many BMI calculations were run) — never your name, measurements, goals, or results</li>
-          <li>Your personal results are never uploaded anywhere unless you choose to download or share them yourself</li>
-        </ul>
-      </div>
-      <div class="notice-box">
-        <h4>Medical Disclaimer</h4>
-        <p>Body IQ is an educational wellness tool designed to provide general health information. BMI, calorie estimates, and personalized recommendations are general guidance only and are not medical advice, diagnosis, or treatment. BMI is only one indicator of health and may not accurately represent body composition for everyone, including athletes, pregnant individuals, older adults, or people with high muscle mass. Always consult a qualified healthcare professional before making significant changes to your diet, exercise routine, or lifestyle.</p>
-      </div>
-      <button type="button" class="text-link" onclick="startOver()">Start over</button>
     </div>
   </div>
 </div>
+</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- Anonymous, aggregate usage counting only — see analytics.js and the
+     Privacy First section on the results page for exactly what this does. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="analytics.js"></script>
+<script src="dynamic-content.js"></script>
+<script src="shared.js"></script>
 <script>
-  const CATEGORY_COLORS_LIGHT = { 'Underweight': '#5B7C99', 'Normal weight': '#6B8F4E', 'Overweight': '#C99A3C', 'Obese': '#9B3B32' };
-  const CATEGORY_COLORS_DARK = { 'Underweight': '#82A6CC', 'Normal weight': '#8FBE72', 'Overweight': '#E0B15C', 'Obese': '#C25C4E' };
-  function getCategoryColor(cat) {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    const map = isDark ? CATEGORY_COLORS_DARK : CATEGORY_COLORS_LIGHT;
-    return map[cat] || (isDark ? '#BFB49F' : '#6B6355');
-  }
-
-  const THEME_KEY = 'bodyiqTheme';
-  function toggleTheme() {
-    const current = document.documentElement.getAttribute('data-theme') || 'light';
-    const next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
-    syncThemeToggleButton();
-  }
-  function syncThemeToggleButton() {
-    const btn = document.getElementById('themeToggle');
-    if (!btn) return;
-    const theme = document.documentElement.getAttribute('data-theme') || 'light';
-    btn.textContent = theme === 'dark' ? '\u2600\uFE0F Light' : '\uD83C\uDF19 Dark';
-  }
-
-  const KG_PER_LB = 0.453592;
-  const CM_PER_IN = 2.54;
-  const ACTIVITY_MULTIPLIER = { sedentary: 1.2, light: 1.375, moderate: 1.55, active: 1.725 };
-  const LABELS = {
-    sedentary: 'I mostly sit or stay in one place all day',
-    light: 'I move around a little here and there',
-    moderate: "I'm fairly active most days",
-    active: "I'm on the move constantly",
-    lose: 'I want to lose weight',
-    gain: 'I want to gain weight',
-    maintain: 'I want to stay around where I am',
-    improve: 'I just want to feel healthier overall',
-    healthy: 'I eat pretty healthy, most of the time',
-    mixed: "It's a mix \u2014 some healthy, some not",
-    processed: 'Mostly fast food or processed meals',
-    never: 'Rarely or never',
-    '1-2': 'A day or two a week',
-    '3-5': 'A solid few days a week',
-    daily: 'Pretty much every day',
-    less6: 'Not much \u2014 under 6 hours',
-    '6-8': 'A decent amount \u2014 6 to 8 hours',
-    more8: 'Plenty \u2014 more than 8 hours'
-  };
-
-  function computeWellnessScores(measurement, assessment) {
-    const weightMap = { 'Normal weight': 95, 'Overweight': 65, 'Underweight': 65, 'Obese': 45 };
-    const activityLevelMap = { sedentary: 40, light: 60, moderate: 80, active: 100 };
-    const exerciseMap = { never: 30, '1-2': 55, '3-5': 80, daily: 100 };
-    const nutritionMap = { healthy: 95, mixed: 65, processed: 40 };
-    const sleepMap = { less6: 50, '6-8': 95, more8: 85 };
-
-    const weight = weightMap[measurement.category] != null ? weightMap[measurement.category] : 70;
-    const activityLevelScore = activityLevelMap[assessment.activity] != null ? activityLevelMap[assessment.activity] : 60;
-    const exerciseScore = exerciseMap[assessment.exercise] != null ? exerciseMap[assessment.exercise] : 60;
-    const activity = Math.round((activityLevelScore + exerciseScore) / 2);
-    const nutrition = nutritionMap[assessment.eating] != null ? nutritionMap[assessment.eating] : 65;
-    const sleep = sleepMap[assessment.sleep] != null ? sleepMap[assessment.sleep] : 70;
-
-    const overall = Math.round(weight * 0.25 + activityLevelScore * 0.20 + exerciseScore * 0.20 + nutrition * 0.20 + sleep * 0.15);
-
-    let status;
-    if (overall >= 85) status = 'Excellent';
-    else if (overall >= 70) status = 'Good';
-    else if (overall >= 55) status = 'Fair';
-    else status = 'Needs Improvement';
-
-    return { weight: weight, activity: activity, nutrition: nutrition, sleep: sleep, overall: overall, status: status };
-  }
-
-  function wellnessInsight(scores) {
-    const dims = [
-      { label: 'Weight Status', value: scores.weight },
-      { label: 'Physical Activity', value: scores.activity },
-      { label: 'Nutrition', value: scores.nutrition },
-      { label: 'Sleep', value: scores.sleep }
-    ];
-    const strongest = dims.reduce(function (a, b) { return b.value > a.value ? b : a; });
-    const weakest = dims.reduce(function (a, b) { return b.value < a.value ? b : a; });
-    const strongestText = 'Your strongest area right now is <strong>' + strongest.label + '</strong>.';
-    const improvementText = strongest.label === weakest.label
-      ? "You're holding remarkably steady across the board \u2014 nice consistency."
-      : 'There\u2019s room to grow in <strong>' + weakest.label + '</strong> \u2014 even small, steady changes here could make a real difference.';
-    return strongestText + ' ' + improvementText;
-  }
-
-  function wellnessStatusClass(status) {
-    if (status === 'Excellent') return 'excellent';
-    if (status === 'Good') return 'good';
-    if (status === 'Fair') return 'fair';
-    return 'needs';
-  }
-
-  function wellnessExplanation(scores) {
-    const dims = [
-      { label: 'your weight status', value: scores.weight },
-      { label: 'physical activity', value: scores.activity },
-      { label: 'nutrition', value: scores.nutrition },
-      { label: 'sleep', value: scores.sleep }
-    ];
-    const sorted = dims.slice().sort(function (a, b) { return b.value - a.value; });
-    const best = sorted[0], worst = sorted[sorted.length - 1];
-    let opener;
-    if (scores.overall >= 85) opener = "You're in a really strong place overall \u2014 ";
-    else if (scores.overall >= 70) opener = "You're doing well overall, with a solid foundation \u2014 ";
-    else if (scores.overall >= 55) opener = "You've got a fair foundation with some clear opportunities \u2014 ";
-    else opener = "There's real opportunity here, and that's a good thing \u2014 it means small changes can move the needle \u2014 ";
-    return opener + best.label + " looks like a real strength for you right now. If you're looking for where to focus next, " + worst.label + " could be the gentlest place to start \u2014 nothing drastic, just small and steady.";
-  }
-
-  function buildWellnessWheelSVG(scores) {
-    const labels = ['Weight Status', 'Physical Activity', 'Nutrition', 'Sleep', 'Overall Wellness'];
-    const values = [scores.weight, scores.activity, scores.nutrition, scores.sleep, scores.overall];
-    const size = 240, center = size / 2, maxR = 78;
-    const angleStep = (2 * Math.PI) / 5, startAngle = -Math.PI / 2;
-    function pointFor(i, r) {
-      const angle = startAngle + i * angleStep;
-      return [center + r * Math.cos(angle), center + r * Math.sin(angle)];
-    }
-    let svg = '<svg viewBox="0 0 ' + size + ' ' + size + '" width="100%" height="100%" style="max-width:230px;display:block;">';
-    [0.25, 0.5, 0.75, 1].forEach(function (frac) {
-      const pts = [];
-      for (let i = 0; i < 5; i++) { const p = pointFor(i, maxR * frac); pts.push(p[0] + ',' + p[1]); }
-      svg += '<polygon points="' + pts.join(' ') + '" fill="none" stroke="var(--divider)" stroke-width="1" />';
-    });
-    for (let i = 0; i < 5; i++) {
-      const p = pointFor(i, maxR);
-      svg += '<line x1="' + center + '" y1="' + center + '" x2="' + p[0] + '" y2="' + p[1] + '" stroke="var(--divider)" stroke-width="1" />';
-    }
-    const dataPts = [];
-    for (let i = 0; i < 5; i++) {
-      const r = maxR * (Math.max(0, Math.min(100, values[i])) / 100);
-      const p = pointFor(i, r);
-      dataPts.push(p[0] + ',' + p[1]);
-    }
-    svg += '<polygon points="' + dataPts.join(' ') + '" fill="var(--brass)" fill-opacity="0.30" stroke="var(--thread)" stroke-width="2" stroke-linejoin="round" />';
-    for (let i = 0; i < 5; i++) {
-      const r = maxR * (Math.max(0, Math.min(100, values[i])) / 100);
-      const p = pointFor(i, r);
-      svg += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="3.5" fill="var(--thread)" />';
-    }
-    for (let i = 0; i < 5; i++) {
-      const p = pointFor(i, maxR + 20);
-      const anchor = Math.abs(p[0] - center) < 6 ? 'middle' : (p[0] > center ? 'start' : 'end');
-      svg += '<text x="' + p[0] + '" y="' + p[1] + '" text-anchor="' + anchor + '" dominant-baseline="middle" font-size="9.5" font-family="Karla, sans-serif" font-weight="700" fill="var(--ink-soft)">' + labels[i] + '</text>';
-    }
-    svg += '</svg>';
-    return svg;
-  }
-
-  function buildBodyReflection(measurement, assessment, scores) {
-    const first = (measurement.name || '').trim().split(' ')[0];
-    const dims = [
-      { label: 'weight status', value: scores.weight },
-      { label: 'physical activity', value: scores.activity },
-      { label: 'nutrition', value: scores.nutrition },
-      { label: 'sleep', value: scores.sleep }
-    ];
-    const sorted = dims.slice().sort(function (a, b) { return b.value - a.value; });
-    const strongest = sorted[0].label, gentlest = sorted[sorted.length - 1].label;
-    const goalPhraseMap = {
-      lose: 'working toward losing some weight', gain: 'working toward gaining some weight',
-      maintain: 'focused on staying right where you are', improve: 'focused on feeling healthier overall'
-    };
-    const goalPhrase = goalPhraseMap[assessment.goal] || 'thinking about your overall health';
-
-    const p1 = (first ? first + ", h" : "H") + "ere's where things stand today: your BMI landed in the " +
-      measurement.category.toLowerCase() + " range, and your overall wellness score came out to " + scores.overall +
-      " out of 100 \u2014 which puts you in the \u201c" + scores.status + "\u201d range. That number isn't a grade; it's just " +
-      "a snapshot of one moment, built from your measurements and how you answered a few questions about your day-to-day life.";
-    const p2 = "You told us you're " + goalPhrase + ", and looking at your habits, " + strongest +
-      " stands out as a real strength right now \u2014 that's worth recognizing. If there's one place that could use a " +
-      "little more attention, it's " + gentlest + ". Not a big overhaul, just small, steady adjustments over time.";
-    const p3 = "Long-term health isn't built in a single day, and it isn't built through perfection either \u2014 it's built " +
-      "through habits you can actually keep up with. Whatever you do next, let it be something sustainable, not something " +
-      "drastic. You're allowed to take this one small step at a time.";
-    return [p1, p2, p3];
-  }
-
-  const HISTORY_KEY = 'bmiTapeHistory';
-  const MAX_HISTORY = 5;
-
-  let weightUnit = 'kg', heightUnit = 'cm', lastSummaryText = '', lastMeasurement = {}, lastAssessment = null, lastScores = null, lastReflection = null;
-
-  function goToScreen(id) {
-    document.querySelectorAll('.screen').forEach(function (s) { s.classList.remove('active'); });
-    document.getElementById(id).classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+  let weightUnit = 'kg';
+  let heightUnit = 'cm';
+  let lastSummaryText = '';
+  let lastMeasurement = {};
 
   function toggleWeightUnit() {
-    const input = document.getElementById('weight'); const btn = document.getElementById('weightUnitBtn');
+    const input = document.getElementById('weight');
+    const btn = document.getElementById('weightUnitBtn');
     const val = parseFloat(input.value);
-    if (weightUnit === 'kg') { weightUnit = 'lb'; if (!isNaN(val)) input.value = (val / KG_PER_LB).toFixed(1); input.placeholder = '154'; }
-    else { weightUnit = 'kg'; if (!isNaN(val)) input.value = (val * KG_PER_LB).toFixed(1); input.placeholder = '70'; }
+    if (weightUnit === 'kg') {
+      weightUnit = 'lb';
+      if (!isNaN(val)) input.value = (val / KG_PER_LB).toFixed(1);
+      input.placeholder = '154';
+    } else {
+      weightUnit = 'kg';
+      if (!isNaN(val)) input.value = (val * KG_PER_LB).toFixed(1);
+      input.placeholder = '70';
+    }
     btn.textContent = weightUnit;
   }
 
   function toggleHeightUnit() {
-    const input = document.getElementById('height'); const btn = document.getElementById('heightUnitBtn');
+    const input = document.getElementById('height');
+    const btn = document.getElementById('heightUnitBtn');
     const val = parseFloat(input.value);
-    if (heightUnit === 'cm') { heightUnit = 'in'; if (!isNaN(val)) input.value = (val / CM_PER_IN).toFixed(1); input.placeholder = '69'; }
-    else { heightUnit = 'cm'; if (!isNaN(val)) input.value = (val * CM_PER_IN).toFixed(1); input.placeholder = '175'; }
+    if (heightUnit === 'cm') {
+      heightUnit = 'in';
+      if (!isNaN(val)) input.value = (val / CM_PER_IN).toFixed(1);
+      input.placeholder = '69';
+    } else {
+      heightUnit = 'cm';
+      if (!isNaN(val)) input.value = (val * CM_PER_IN).toFixed(1);
+      input.placeholder = '175';
+    }
     btn.textContent = heightUnit;
   }
 
-  function readHistory() { try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; } catch (e) { return []; } }
+  function readHistory() {
+    try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }
+    catch (e) { return []; }
+  }
 
   function calculateBMI() {
-    const name = document.getElementById('name').value.trim();
-    const weightRaw = parseFloat(document.getElementById('weight').value);
-    const heightRaw = parseFloat(document.getElementById('height').value);
-    const age = parseFloat(document.getElementById('age').value);
-    const gender = document.getElementById('gender').value;
+    const nameInput = document.getElementById('name');
+    const weightInput = document.getElementById('weight');
+    const heightInput = document.getElementById('height');
+    const ageInput = document.getElementById('age');
+    const genderInput = document.getElementById('gender');
     const errorEl = document.getElementById('error');
     const resultEl = document.getElementById('result');
+    const pinEl = document.getElementById('pin');
+    const pinLabelEl = document.getElementById('pinLabel');
+    const possessiveEl = document.getElementById('possessive');
+    const categoryWordEl = document.getElementById('categoryWord');
+    const healthyRangeEl = document.getElementById('healthyRange');
+    const trendEl = document.getElementById('trendNote');
+
+    const name = nameInput.value.trim();
+    const weightRaw = parseFloat(weightInput.value);
+    const heightRaw = parseFloat(heightInput.value);
+    const age = parseFloat(ageInput.value);
+    const gender = genderInput.value;
 
     if (!weightRaw || !heightRaw || weightRaw <= 0 || heightRaw <= 0) {
-      errorEl.classList.add('show'); resultEl.classList.remove('show'); return;
+      errorEl.classList.add('show');
+      resultEl.classList.remove('show');
+      return;
     }
     errorEl.classList.remove('show');
 
@@ -678,46 +225,112 @@
     else if (bmi < 30) category = 'Overweight';
     else category = 'Obese';
 
+    if (window.BodyIQAnalytics) window.BodyIQAnalytics.trackBmiCalculated(category);
+
     const clamped = Math.min(Math.max(bmi, 15), 40);
     const pos = ((clamped - 15) / 25) * 100;
-    document.getElementById('pin').style.left = pos + '%';
-    document.getElementById('pinLabel').style.left = pos + '%';
-    document.getElementById('pinLabel').textContent = bmiRounded;
-    document.getElementById('possessive').textContent = name ? name + '\u2019s' : 'Your';
-    const catWord = document.getElementById('categoryWord');
-    catWord.textContent = category; catWord.style.color = getCategoryColor(category);
+    pinEl.style.left = pos + '%';
+    pinLabelEl.style.left = pos + '%';
+    pinLabelEl.textContent = bmiRounded;
 
-    const minKg = 18.5 * heightM * heightM, maxKg = 24.9 * heightM * heightM;
-    let rangeText = weightUnit === 'kg'
-      ? minKg.toFixed(1) + '\u2013' + maxKg.toFixed(1) + ' kg'
-      : (minKg / KG_PER_LB).toFixed(1) + '\u2013' + (maxKg / KG_PER_LB).toFixed(1) + ' lb';
-    document.getElementById('healthyRange').innerHTML = 'For this height, a Normal-range weight would be about <strong>' + rangeText + '</strong>.';
+    possessiveEl.textContent = name ? name + '\u2019s' : 'Your';
+    categoryWordEl.textContent = category;
+    categoryWordEl.style.color = getCategoryColor(category);
+
+    const minKg = 18.5 * heightM * heightM;
+    const maxKg = 24.9 * heightM * heightM;
+    let rangeText;
+    if (weightUnit === 'kg') {
+      rangeText = minKg.toFixed(1) + '\u2013' + maxKg.toFixed(1) + ' kg';
+    } else {
+      rangeText = (minKg / KG_PER_LB).toFixed(1) + '\u2013' + (maxKg / KG_PER_LB).toFixed(1) + ' lb';
+    }
+    healthyRangeEl.innerHTML = 'For this height, a Normal-range weight would be about <strong>' + rangeText + '</strong>.';
 
     const hasAgeGender = age > 0 && (gender === 'male' || gender === 'female');
     let bmr = null;
-    if (hasAgeGender) bmr = gender === 'male' ? 10 * weightKg + 6.25 * heightCm - 5 * age + 5 : 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
+    if (hasAgeGender) {
+      bmr = gender === 'male'
+        ? 10 * weightKg + 6.25 * heightCm - 5 * age + 5
+        : 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
+    }
 
-    lastMeasurement = { name, weightKg, heightCm, age: hasAgeGender ? age : null, gender: hasAgeGender ? gender : null, bmi, bmiRounded, category, rangeText, bmr };
-    lastAssessment = null;
+    lastMeasurement = {
+      name: name, weightKg: weightKg, heightCm: heightCm,
+      age: hasAgeGender ? age : null, gender: hasAgeGender ? gender : null,
+      bmi: bmi, bmiRounded: bmiRounded, category: category, rangeText: rangeText, bmr: bmr
+    };
+    saveMeasurement(lastMeasurement);
+    clearAssessment(); // fresh flow — checkin/results shouldn't show stale answers
 
-    const trendEl = document.getElementById('trendNote');
-    const previousEntry = readHistory().find(function (e) { return (e.name || '') === name; });
+    const priorHistory = readHistory();
+    const previousEntry = priorHistory.find(function (e) { return (e.name || '') === name; });
     if (previousEntry) {
       const delta = bmi - parseFloat(previousEntry.bmi);
-      if (Math.abs(delta) < 0.05) { trendEl.textContent = 'Steady since ' + previousEntry.date + '.'; trendEl.className = 'trend-note show'; }
-      else if (delta > 0) { trendEl.textContent = '\u25B2 Up ' + Math.abs(delta).toFixed(1) + ' since ' + previousEntry.date + '.'; trendEl.className = 'trend-note show up'; }
-      else { trendEl.textContent = '\u25BC Down ' + Math.abs(delta).toFixed(1) + ' since ' + previousEntry.date + '.'; trendEl.className = 'trend-note show down'; }
-    } else { trendEl.textContent = ''; trendEl.className = 'trend-note'; }
+      if (Math.abs(delta) < 0.05) {
+        trendEl.textContent = 'Steady since ' + previousEntry.date + '.';
+        trendEl.className = 'trend-note show';
+      } else if (delta > 0) {
+        trendEl.textContent = '\u25B2 Up ' + Math.abs(delta).toFixed(1) + ' since ' + previousEntry.date + '.';
+        trendEl.className = 'trend-note show up';
+      } else {
+        trendEl.textContent = '\u25BC Down ' + Math.abs(delta).toFixed(1) + ' since ' + previousEntry.date + '.';
+        trendEl.className = 'trend-note show down';
+      }
+    } else {
+      trendEl.textContent = '';
+      trendEl.className = 'trend-note';
+    }
 
-    lastSummaryText = (name || 'Result') + ': BMI ' + bmiRounded + ' (' + category + '). Healthy range for this height: ' + rangeText + '.';
+    lastSummaryText = (name ? name : 'Result') + ': BMI ' + bmiRounded + ' (' + category + '). Healthy range for this height: ' + rangeText + '.';
     document.getElementById('copyBtn').textContent = 'Copy result';
 
-    let history = readHistory();
-    history.unshift({ name, bmi: bmiRounded, category, date: new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) });
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, MAX_HISTORY)));
+    saveToHistory(name, bmiRounded, category);
     renderHistory();
 
     resultEl.classList.add('show');
+  }
+
+  function continueToCheckin() {
+    window.location.href = 'checkin.html';
+  }
+
+  function copyResult() {
+    const btn = document.getElementById('copyBtn');
+    if (!navigator.clipboard) {
+      btn.textContent = "Can't copy here";
+      setTimeout(function () { btn.textContent = 'Copy result'; }, 1600);
+      return;
+    }
+    navigator.clipboard.writeText(lastSummaryText).then(function () {
+      btn.textContent = 'Copied \u2713';
+      setTimeout(function () { btn.textContent = 'Copy result'; }, 1600);
+    }).catch(function () {
+      btn.textContent = "Couldn't copy";
+      setTimeout(function () { btn.textContent = 'Copy result'; }, 1600);
+    });
+  }
+
+  function resetForm() {
+    document.getElementById('name').value = '';
+    document.getElementById('weight').value = '';
+    document.getElementById('height').value = '';
+    document.getElementById('age').value = '';
+    document.getElementById('gender').value = '';
+    document.getElementById('error').classList.remove('show');
+    document.getElementById('result').classList.remove('show');
+    clearFlow();
+    document.getElementById('weight').focus();
+  }
+
+  function saveToHistory(name, bmi, category) {
+    let history = readHistory();
+    history.unshift({
+      name: name, bmi: bmi, category: category,
+      date: new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+    });
+    history = history.slice(0, MAX_HISTORY);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
   }
 
   function renderHistory() {
@@ -729,459 +342,57 @@
     section.style.display = 'block';
     history.forEach(function (entry) {
       const li = document.createElement('li');
-      const dot = document.createElement('span'); dot.className = 'history-dot'; dot.style.background = getCategoryColor(entry.category);
-      const nameSpan = document.createElement('span'); nameSpan.className = 'history-name'; nameSpan.textContent = entry.name || 'You';
-      const bmiSpan = document.createElement('span'); bmiSpan.className = 'history-bmi'; bmiSpan.textContent = '\u2014 BMI ' + entry.bmi;
-      const metaSpan = document.createElement('span'); metaSpan.className = 'history-meta'; metaSpan.textContent = entry.date;
+      const dot = document.createElement('span');
+      dot.className = 'history-dot';
+      dot.style.background = getCategoryColor(entry.category);
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'history-name';
+      nameSpan.textContent = entry.name ? entry.name : 'You';
+      const bmiSpan = document.createElement('span');
+      bmiSpan.className = 'history-bmi';
+      bmiSpan.textContent = '\u2014 BMI ' + entry.bmi;
+      const metaSpan = document.createElement('span');
+      metaSpan.className = 'history-meta';
+      metaSpan.textContent = entry.date;
       li.appendChild(dot); li.appendChild(nameSpan); li.appendChild(bmiSpan); li.appendChild(metaSpan);
       list.appendChild(li);
     });
   }
-  function clearHistory() { localStorage.removeItem(HISTORY_KEY); renderHistory(); }
 
-  function copyResult() {
-    const btn = document.getElementById('copyBtn');
-    if (!navigator.clipboard) { btn.textContent = "Can't copy here"; setTimeout(function () { btn.textContent = 'Copy result'; }, 1600); return; }
-    navigator.clipboard.writeText(lastSummaryText).then(function () {
-      btn.textContent = 'Copied \u2713'; setTimeout(function () { btn.textContent = 'Copy result'; }, 1600);
-    }).catch(function () { btn.textContent = "Couldn't copy"; setTimeout(function () { btn.textContent = 'Copy result'; }, 1600); });
-  }
-
-  function continueToCheckin() {
-    document.getElementById('recapLine').textContent =
-      (lastMeasurement.name ? lastMeasurement.name + ', your' : 'Your') + ' BMI was ' + lastMeasurement.bmiRounded + ' — ' + lastMeasurement.category + '.';
-    ['activityLevel', 'goal', 'eating', 'exercise', 'sleep'].forEach(function (id) { document.getElementById(id).value = ''; });
-    document.getElementById('assessmentError').classList.remove('show');
-    goToScreen('screen-checkin');
-  }
-
-  function nutritionText(eating, goal) {
-    let base = eating === 'processed' ? "Try swapping one processed meal a day for something home-cooked \u2014 small, steady swaps tend to add up more than big overhauls."
-      : eating === 'mixed' ? "You're already mixing healthy and less-healthy choices \u2014 leaning a little more toward vegetables, lean protein, and whole grains could help you feel steadier through the day."
-      : "Your eating habits already sound solid \u2014 keep prioritizing variety and portion balance rather than cutting foods out.";
-    let note = goal === 'lose' ? " Since you're aiming to lose weight, keeping meals protein-rich and easing off sugary drinks tends to help the most."
-      : goal === 'gain' ? " Since you're aiming to gain weight, an extra nutrient-dense snack or two between meals can help without feeling forced."
-      : goal === 'maintain' ? " Since you're aiming to maintain, consistency matters more here than perfection."
-      : " For overall health, think in terms of adding good things in rather than just cutting things out.";
-    return base + note;
-  }
-  function activityText(exercise, goal) {
-    let base = exercise === 'never' ? "Even a 10\u201315 minute walk a few times a week is a solid place to start \u2014 you don't need a gym to begin moving more."
-      : exercise === '1-2' ? "You're already building the habit \u2014 adding just one more day a week could help you notice more progress."
-      : exercise === '3-5' ? "You're doing well \u2014 mixing in strength training a couple of times a week can complement what you're already doing."
-      : "You're highly active \u2014 just make sure you're building in real rest days so your body can recover.";
-    let note = goal === 'lose' ? " A mix of cardio and light strength work tends to support weight loss best over time."
-      : goal === 'gain' ? " Focus on strength training with gradual increases in weight or reps to support healthy gain."
-      : " Keep doing what feels sustainable \u2014 consistency beats intensity here.";
-    return base + note;
-  }
-  function sleepText(sleep) {
-    if (sleep === 'less6') return "You're getting under 6 hours most nights \u2014 sleep plays a big role in appetite, energy, and recovery, so even 30\u201345 extra minutes can make a noticeable difference.";
-    if (sleep === '6-8') return "You're in a solid range \u2014 protecting that routine, especially a consistent bedtime, will keep it working for you.";
-    return "You're getting plenty of rest \u2014 it's worth checking that the sleep actually feels restful, not just long.";
-  }
-  function hydrationText(activity) {
-    if (activity === 'active') return "Aim for roughly 2.5\u20133.5 liters of water a day \u2014 a bit more on days you're sweating a lot.";
-    return "Aim for roughly 2\u20132.5 liters of water a day, and a little more on hot or active days.";
-  }
-  function lifestyleText(goal) {
-    if (goal === 'lose') return "Small, steady changes tend to stick far better than drastic ones. Aim for gradual progress you can actually maintain, not perfection.";
-    if (goal === 'gain') return "Building weight takes patience \u2014 track progress over weeks, not days, and don't be discouraged by normal day-to-day fluctuation.";
-    if (goal === 'maintain') return "You're already close to where you want to be \u2014 the small, consistent habits you're keeping now are exactly what keeps it that way.";
-    return "Overall health is bigger than any single number. Sleep, movement, food, and stress all play a part, so improving any one of them counts.";
-  }
-
-  function generateResults() {
-    const activity = document.getElementById('activityLevel').value;
-    const goal = document.getElementById('goal').value;
-    const eating = document.getElementById('eating').value;
-    const exercise = document.getElementById('exercise').value;
-    const sleep = document.getElementById('sleep').value;
-    const errEl = document.getElementById('assessmentError');
-
-    if (!activity || !goal || !eating || !exercise || !sleep) { errEl.classList.add('show'); return; }
-    errEl.classList.remove('show');
-    lastAssessment = { activity, goal, eating, exercise, sleep };
-
-    const clamped = Math.min(Math.max(lastMeasurement.bmi, 15), 40);
-    const pos = ((clamped - 15) / 25) * 100;
-    document.getElementById('finalPin').style.left = pos + '%';
-    document.getElementById('finalPinLabel').style.left = pos + '%';
-    document.getElementById('finalPinLabel').textContent = lastMeasurement.bmiRounded;
-    document.getElementById('finalPossessive').textContent = lastMeasurement.name ? lastMeasurement.name + '\u2019s' : 'Your';
-    const catWord = document.getElementById('finalCategoryWord');
-    catWord.textContent = lastMeasurement.category; catWord.style.color = getCategoryColor(lastMeasurement.category);
-    document.getElementById('finalHealthyRange').innerHTML = 'For this height, a Normal-range weight would be about <strong>' + lastMeasurement.rangeText + '</strong>.';
-
-    const geneticsEl = document.getElementById('geneticsNote');
-    if (lastMeasurement.category === 'Underweight' || lastMeasurement.category === 'Obese') {
-      geneticsEl.textContent = "Wondering why the number landed here? For a lot of people, genetics, bone structure, or family body type play a real role \u2014 sometimes more than diet or exercise do. This is one data point about you, not a verdict on your habits.";
-      geneticsEl.classList.add('show');
-    } else {
-      geneticsEl.classList.remove('show');
-    }
-
-    const first = (lastMeasurement.name || '').trim().split(' ')[0];
-    document.getElementById('recoGreeting').textContent = (first ? 'Hello ' + first + ',' : 'Hello,') + ' based on your BMI and lifestyle check-in, here are a few general pointers that may help.';
-    document.getElementById('recoNutrition').textContent = nutritionText(eating, goal);
-    document.getElementById('recoActivity').textContent = activityText(exercise, goal);
-    document.getElementById('recoSleep').textContent = sleepText(sleep);
-    document.getElementById('recoHydration').textContent = hydrationText(activity);
-    document.getElementById('recoLifestyle').textContent = lifestyleText(goal);
-
-    renderCalorieBreakdown(activity);
-
-    const scores = computeWellnessScores(lastMeasurement, lastAssessment);
-    document.getElementById('wellnessWheel').innerHTML = buildWellnessWheelSVG(scores);
-    document.getElementById('wellnessInsightText').innerHTML = wellnessInsight(scores);
-    document.getElementById('scoreNumber').innerHTML = scores.overall + '<span>/100</span>';
-    const statusEl = document.getElementById('scoreStatus');
-    statusEl.textContent = scores.status;
-    statusEl.className = 'score-status ' + wellnessStatusClass(scores.status);
-    document.getElementById('scoreExplanation').textContent = wellnessExplanation(scores);
-    const reflectionParagraphs = buildBodyReflection(lastMeasurement, lastAssessment, scores);
-    document.getElementById('reflectionBlock').innerHTML = reflectionParagraphs.map(function (p) { return '<p>' + p + '</p>'; }).join('');
-    lastScores = scores;
-    lastReflection = reflectionParagraphs;
-
-    goToScreen('screen-results');
-  }
-
-  function renderCalorieBreakdown(activity) {
-    const grid = document.getElementById('calorieGrid');
-    const section = document.getElementById('calorieSection');
-    const missing = document.getElementById('calorieMissing');
-    if (!lastMeasurement.bmr) { section.style.display = 'none'; missing.style.display = 'block'; return; }
-    missing.style.display = 'none'; section.style.display = 'block';
-    const tdee = lastMeasurement.bmr * (ACTIVITY_MULTIPLIER[activity] || 1.2);
-    const loss = Math.max(Math.round(tdee - 500), 1200);
-    const gain = Math.round(tdee + 500);
-    grid.innerHTML = '';
-    [['Estimated BMR', Math.round(lastMeasurement.bmr) + ' kcal/day'], ['Maintenance (TDEE)', Math.round(tdee) + ' kcal/day'],
-     ['For Weight Loss', '~' + loss + ' kcal/day'], ['For Weight Gain', '~' + gain + ' kcal/day']].forEach(function (r) {
-      const row = document.createElement('div'); row.className = 'calorie-row';
-      const label = document.createElement('span'); label.textContent = r[0];
-      const val = document.createElement('strong'); val.textContent = r[1];
-      row.appendChild(label); row.appendChild(val); grid.appendChild(row);
-    });
-  }
-
-  function downloadReport() {
-    const btn = document.getElementById('pdfBtn');
-    if (!window.jspdf) {
-      btn.textContent = "Couldn't load PDF tool";
-      setTimeout(function () { btn.textContent = 'Download Health Report'; }, 1800);
-      return;
-    }
-    const jsPDF = window.jspdf.jsPDF;
-    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-    const pageW = doc.internal.pageSize.getWidth();
-    const pageH = doc.internal.pageSize.getHeight();
-    const margin = 16;
-    const contentW = pageW - margin * 2;
-    let y = 0;
-
-    function categoryRGB(cat) {
-      if (cat === 'Underweight') return [91, 124, 153];
-      if (cat === 'Normal weight') return [107, 143, 78];
-      if (cat === 'Overweight') return [201, 154, 60];
-      return [155, 59, 50];
-    }
-
-    function drawContinuationHeader() {
-      doc.setFillColor(43, 38, 32);
-      doc.rect(0, 0, pageW, 16, 'F');
-      doc.setTextColor(251, 247, 238);
-      doc.setFont(undefined, 'bold'); doc.setFontSize(11);
-      doc.text('BODY IQ', margin, 10.5);
-      doc.setFont(undefined, 'normal'); doc.setFontSize(9);
-      doc.setTextColor(200, 190, 170);
-      doc.text('Health Report (continued)', pageW - margin, 10.5, { align: 'right' });
-      y = 26;
-    }
-
-    function checkBreak(h) {
-      if (y + h > pageH - 22) { doc.addPage(); drawContinuationHeader(); }
-    }
-
-    function sectionLabel(title) {
-      checkBreak(12);
-      doc.setFont(undefined, 'bold'); doc.setFontSize(10.5);
-      const tw = doc.getTextWidth(title.toUpperCase());
-      doc.setFillColor(169, 134, 62);
-      doc.roundedRect(margin, y - 5.5, tw + 8, 7.5, 1.2, 1.2, 'F');
-      doc.setTextColor(251, 247, 238);
-      doc.text(title.toUpperCase(), margin + 4, y);
-      y += 10;
-      doc.setFont(undefined, 'normal');
-      doc.setTextColor(43, 38, 32);
-    }
-
-    function keyValue(label, value) {
-      checkBreak(7);
-      doc.setFontSize(10);
-      doc.setTextColor(107, 99, 85);
-      doc.text(label, margin, y);
-      doc.setTextColor(43, 38, 32);
-      doc.setFont(undefined, 'bold');
-      doc.text(String(value), pageW - margin, y, { align: 'right' });
-      doc.setFont(undefined, 'normal');
-      y += 6.5;
-    }
-
-    function stackedField(label, value) {
-      checkBreak(14);
-      doc.setFont(undefined, 'bold'); doc.setFontSize(8.5); doc.setTextColor(169, 134, 62);
-      doc.text(label.toUpperCase(), margin, y);
-      y += 5;
-      doc.setFont(undefined, 'normal'); doc.setFontSize(10.5); doc.setTextColor(43, 38, 32);
-      const lines = doc.splitTextToSize(String(value), contentW);
-      checkBreak(lines.length * 5.5 + 4);
-      doc.text(lines, margin, y);
-      y += lines.length * 5.5 + 6;
-    }
-
-    doc.setFillColor(43, 38, 32);
-    doc.rect(0, 0, pageW, 40, 'F');
-    doc.setFillColor(169, 134, 62);
-    doc.rect(0, 40, pageW, 2, 'F');
-    doc.setTextColor(251, 247, 238);
-    doc.setFont(undefined, 'bold'); doc.setFontSize(20);
-    doc.text('Body IQ', margin, 20);
-    doc.setFont(undefined, 'normal'); doc.setFontSize(11);
-    doc.setTextColor(216, 206, 180);
-    doc.text('Health Report', margin, 29);
-    doc.setFontSize(9);
-    doc.setTextColor(200, 190, 170);
-    doc.text('Generated ' + new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }), pageW - margin, 20, { align: 'right' });
-    if (lastMeasurement.name) {
-      doc.setFont(undefined, 'bold'); doc.setFontSize(11); doc.setTextColor(251, 247, 238);
-      doc.text(lastMeasurement.name, pageW - margin, 29, { align: 'right' });
-    }
-    y = 52;
-
-    sectionLabel('Personal Information');
-    keyValue('Name', lastMeasurement.name || '\u2014');
-    keyValue('Age', lastMeasurement.age || '\u2014');
-    keyValue('Gender', lastMeasurement.gender ? (lastMeasurement.gender === 'male' ? 'Male' : 'Female') : '\u2014');
-    y += 4;
-
-    sectionLabel('Measurements');
-    keyValue('Height', lastMeasurement.heightCm.toFixed(1) + ' cm');
-    keyValue('Weight', lastMeasurement.weightKg.toFixed(1) + ' kg');
-    y += 4;
-
-    checkBreak(38);
-    const catColor = categoryRGB(lastMeasurement.category);
-    doc.setFillColor(242, 236, 220);
-    doc.roundedRect(margin, y, contentW, 32, 2, 2, 'F');
-    doc.setFillColor(catColor[0], catColor[1], catColor[2]);
-    doc.roundedRect(margin, y, 3, 32, 1, 1, 'F');
-    doc.setFont(undefined, 'bold'); doc.setFontSize(22); doc.setTextColor(43, 38, 32);
-    doc.text(lastMeasurement.bmiRounded, margin + 10, y + 15);
-    doc.setFontSize(9); doc.setFont(undefined, 'normal'); doc.setTextColor(107, 99, 85);
-    doc.text('BMI', margin + 10, y + 21);
-    doc.setFont(undefined, 'bold'); doc.setFontSize(12);
-    doc.setTextColor(catColor[0], catColor[1], catColor[2]);
-    doc.text(lastMeasurement.category, margin + 42, y + 13);
-    doc.setFont(undefined, 'normal'); doc.setFontSize(9); doc.setTextColor(107, 99, 85);
-    doc.text(doc.splitTextToSize('Healthy range for this height: ' + lastMeasurement.rangeText, contentW - 48), margin + 42, y + 20);
-    y += 32 + 8;
-
-    if (lastMeasurement.category === 'Underweight' || lastMeasurement.category === 'Obese') {
-      doc.setFont(undefined, 'italic'); doc.setFontSize(9); doc.setTextColor(107, 99, 85);
-      const geneticsLines = doc.splitTextToSize("Wondering why the number landed here? For a lot of people, genetics, bone structure, or family body type play a real role \u2014 sometimes more than diet or exercise do. This is one data point, not a verdict on your habits.", contentW);
-      checkBreak(geneticsLines.length * 4.6 + 6);
-      doc.text(geneticsLines, margin, y);
-      doc.setFont(undefined, 'normal');
-      y += geneticsLines.length * 4.6 + 8;
-    }
-
-    if (lastAssessment) {
-      sectionLabel('Lifestyle Assessment');
-      stackedField('How much do you move in a typical day?', LABELS[lastAssessment.activity] || lastAssessment.activity);
-      stackedField('What are you hoping to do?', LABELS[lastAssessment.goal] || lastAssessment.goal);
-      stackedField('How would you describe the way you eat?', LABELS[lastAssessment.eating] || lastAssessment.eating);
-      stackedField('How often do you exercise in a week?', LABELS[lastAssessment.exercise] || lastAssessment.exercise);
-      stackedField('How much sleep do you usually get a night?', LABELS[lastAssessment.sleep] || lastAssessment.sleep);
-      y += 2;
-    }
-
-    if (lastMeasurement.bmr && lastAssessment) {
-      sectionLabel('Estimated Calories');
-      const tdee = lastMeasurement.bmr * (ACTIVITY_MULTIPLIER[lastAssessment.activity] || 1.2);
-      const loss = Math.max(Math.round(tdee - 500), 1200);
-      const gain = Math.round(tdee + 500);
-      const rows = [
-        ['Estimated BMR', Math.round(lastMeasurement.bmr) + ' kcal/day'],
-        ['Maintenance (TDEE)', Math.round(tdee) + ' kcal/day'],
-        ['Suggested \u2014 Weight Loss', '~' + loss + ' kcal/day'],
-        ['Suggested \u2014 Weight Gain', '~' + gain + ' kcal/day']
-      ];
-      checkBreak(rows.length * 8 + 6);
-      doc.setDrawColor(220, 208, 178);
-      doc.roundedRect(margin, y, contentW, rows.length * 8 + 4, 2, 2);
-      let ry = y + 7;
-      rows.forEach(function (r, i) {
-        doc.setFontSize(10); doc.setTextColor(43, 38, 32); doc.setFont(undefined, 'normal');
-        doc.text(r[0], margin + 5, ry);
-        doc.setFont(undefined, 'bold'); doc.setTextColor(155, 59, 50);
-        doc.text(r[1], pageW - margin - 5, ry, { align: 'right' });
-        if (i < rows.length - 1) {
-          doc.setDrawColor(230, 222, 200);
-          doc.line(margin + 5, ry + 2.5, pageW - margin - 5, ry + 2.5);
-        }
-        ry += 8;
-      });
-      y += rows.length * 8 + 4 + 8;
-      doc.setFont(undefined, 'italic'); doc.setFontSize(8); doc.setTextColor(107, 99, 85);
-      doc.text('Rough estimates from the Mifflin\u2013St Jeor formula \u2014 not a prescription.', margin, y);
-      doc.setFont(undefined, 'normal');
-      y += 10;
-    }
-
-    if (lastAssessment) {
-      sectionLabel('Personalized Recommendations');
-      [
-        ['Nutrition', document.getElementById('recoNutrition').textContent],
-        ['Physical Activity', document.getElementById('recoActivity').textContent],
-        ['Sleep & Recovery', document.getElementById('recoSleep').textContent],
-        ['Hydration', document.getElementById('recoHydration').textContent],
-        ['Overall Lifestyle', document.getElementById('recoLifestyle').textContent]
-      ].forEach(function (item) {
-        doc.setFont(undefined, 'normal'); doc.setFontSize(9.5);
-        const lines = doc.splitTextToSize(item[1], contentW - 14);
-        const boxH = 8 + lines.length * 5 + 4;
-        checkBreak(boxH + 4);
-        doc.setFillColor(242, 236, 220);
-        doc.roundedRect(margin, y, contentW, boxH, 1.5, 1.5, 'F');
-        doc.setFillColor(169, 134, 62);
-        doc.roundedRect(margin, y, 2.2, boxH, 1, 1, 'F');
-        doc.setFont(undefined, 'bold'); doc.setFontSize(9); doc.setTextColor(169, 134, 62);
-        doc.text(item[0].toUpperCase(), margin + 7, y + 6.5);
-        doc.setFont(undefined, 'normal'); doc.setFontSize(9.5); doc.setTextColor(43, 38, 32);
-        doc.text(lines, margin + 7, y + 12.5);
-        y += boxH + 5;
-      });
-    }
-
-    function wellnessBar(label, value) {
-      checkBreak(12);
-      doc.setFont(undefined, 'normal'); doc.setFontSize(9.5); doc.setTextColor(43, 38, 32);
-      doc.text(label, margin, y);
-      doc.setFont(undefined, 'bold'); doc.setTextColor(155, 59, 50);
-      doc.text(String(value) + '/100', pageW - margin, y, { align: 'right' });
-      y += 3.5;
-      doc.setFillColor(230, 222, 200);
-      doc.roundedRect(margin, y, contentW, 3, 1.5, 1.5, 'F');
-      doc.setFillColor(169, 134, 62);
-      doc.roundedRect(margin, y, contentW * (Math.max(0, Math.min(100, value)) / 100), 3, 1.5, 1.5, 'F');
-      doc.setFont(undefined, 'normal');
-      y += 8.5;
-    }
-
-    const pdfScores = lastScores || computeWellnessScores(lastMeasurement, lastAssessment);
-
-    sectionLabel('Wellness Snapshot');
-    wellnessBar('Weight Status', pdfScores.weight);
-    wellnessBar('Physical Activity', pdfScores.activity);
-    wellnessBar('Nutrition', pdfScores.nutrition);
-    wellnessBar('Sleep', pdfScores.sleep);
-    wellnessBar('Overall Wellness', pdfScores.overall);
-    y += 2;
-
-    sectionLabel('Wellness Score');
-    checkBreak(38);
-    doc.setFillColor(242, 236, 220);
-    doc.roundedRect(margin, y, contentW, 36, 2, 2, 'F');
-    doc.setFillColor(169, 134, 62);
-    doc.roundedRect(margin, y, 3, 36, 1, 1, 'F');
-    doc.setFont(undefined, 'bold'); doc.setFontSize(24); doc.setTextColor(43, 38, 32);
-    doc.text(String(pdfScores.overall), margin + 10, y + 18);
-    doc.setFontSize(8.5); doc.setFont(undefined, 'normal'); doc.setTextColor(107, 99, 85);
-    doc.text('OUT OF 100', margin + 10, y + 24);
-    doc.setFont(undefined, 'bold'); doc.setFontSize(11); doc.setTextColor(169, 134, 62);
-    doc.text(pdfScores.status.toUpperCase(), margin + 42, y + 13);
-    doc.setFont(undefined, 'normal'); doc.setFontSize(9); doc.setTextColor(107, 99, 85);
-    doc.text(doc.splitTextToSize(wellnessExplanation(pdfScores), contentW - 46), margin + 42, y + 20);
-    y += 36 + 8;
-
-    sectionLabel('Your Body Reflection');
-    (lastReflection || buildBodyReflection(lastMeasurement, lastAssessment, pdfScores)).forEach(function (p) {
-      doc.setFont(undefined, 'italic'); doc.setFontSize(9.5); doc.setTextColor(43, 38, 32);
-      const lines = doc.splitTextToSize(p, contentW);
-      checkBreak(lines.length * 4.6 + 6);
-      doc.text(lines, margin, y);
-      y += lines.length * 4.6 + 6;
-    });
-    doc.setFont(undefined, 'normal');
-    y += 2;
-
-    sectionLabel('Privacy First');
-    doc.setFont(undefined, 'normal'); doc.setFontSize(9); doc.setTextColor(107, 99, 85);
-    const privacyIntro = doc.splitTextToSize('Body IQ was built without accounts or ads, and keeps data collection to the bare minimum needed to know the tool is actually useful:', contentW);
-    checkBreak(privacyIntro.length * 4.4 + 4);
-    doc.text(privacyIntro, margin, y);
-    y += privacyIntro.length * 4.4 + 3;
-    [
-      'No account or sign-up required',
-      'No advertisements, ever',
-      'No cookies, fingerprinting, or third-party trackers',
-      'Your BMI, calorie, and recommendation calculations happen locally, in your browser, and stay there',
-      'We record anonymous, aggregate usage counts (visits, BMI calculations run) \u2014 never your name, measurements, goals, or results',
-      'Your personal results are never uploaded anywhere unless you choose to download or share them yourself'
-    ].forEach(function (point) {
-      const lines = doc.splitTextToSize(point, contentW - 8);
-      checkBreak(Math.max(lines.length * 4.4, 5.5));
-      doc.setTextColor(107, 143, 78); doc.setFont(undefined, 'bold'); doc.setFontSize(9);
-      doc.text('\u2713', margin, y);
-      doc.setTextColor(107, 99, 85); doc.setFont(undefined, 'normal');
-      doc.text(lines, margin + 6, y);
-      y += Math.max(lines.length * 4.4, 5.5);
-    });
-    y += 4;
-
-    checkBreak(30);
-    doc.setDrawColor(216, 206, 180);
-    doc.line(margin, y, pageW - margin, y);
-    y += 6;
-    doc.setFont(undefined, 'bold'); doc.setFontSize(9); doc.setTextColor(107, 99, 85);
-    doc.text('MEDICAL DISCLAIMER', margin, y);
-    y += 5;
-    doc.setFont(undefined, 'italic'); doc.setFontSize(8.3); doc.setTextColor(107, 99, 85);
-    const discLines = doc.splitTextToSize('Body IQ is an educational wellness tool designed to provide general health information. BMI, calorie estimates, and personalized recommendations are general guidance only and are not medical advice, diagnosis, or treatment. BMI is only one indicator of health and may not accurately represent body composition for everyone, including athletes, pregnant individuals, older adults, or people with high muscle mass. Always consult a qualified healthcare professional before making significant changes to your diet, exercise routine, or lifestyle.', contentW);
-    checkBreak(discLines.length * 4.2);
-    doc.text(discLines, margin, y);
-
-    const pageCount = doc.internal.getNumberOfPages();
-    for (let p = 1; p <= pageCount; p++) {
-      doc.setPage(p);
-      doc.setDrawColor(216, 206, 180);
-      doc.line(margin, pageH - 16, pageW - margin, pageH - 16);
-      doc.setFont(undefined, 'italic'); doc.setFontSize(8); doc.setTextColor(169, 134, 62);
-      doc.text('Generated by Body IQ', pageW / 2, pageH - 10, { align: 'center' });
-      doc.setFont(undefined, 'normal'); doc.setTextColor(150, 140, 120);
-      doc.text('Page ' + p + ' of ' + pageCount, pageW - margin, pageH - 10, { align: 'right' });
-    }
-
-    doc.save('body-iq-health-report.pdf');
-  }
-
-  function startOver() {
-    document.getElementById('name').value = ''; document.getElementById('weight').value = '';
-    document.getElementById('height').value = ''; document.getElementById('age').value = ''; document.getElementById('gender').value = '';
-    document.getElementById('error').classList.remove('show');
-    document.getElementById('result').classList.remove('show');
-    lastMeasurement = {}; lastAssessment = null;
-    goToScreen('screen-measure');
+  function clearHistory() {
+    localStorage.removeItem(HISTORY_KEY);
+    renderHistory();
   }
 
   ['name', 'weight', 'height', 'age'].forEach(function (id) {
-    document.getElementById(id).addEventListener('keypress', function (e) { if (e.key === 'Enter') calculateBMI(); });
+    document.getElementById(id).addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') calculateBMI();
+    });
   });
 
   renderHistory();
   syncThemeToggleButton();
+  if (window.BodyIQAnalytics) window.BodyIQAnalytics.trackVisit();
+
+  if (window.BodyIQContent) {
+    window.BodyIQContent.fetchMaintenanceMode().then(function (isOn) {
+      if (isOn) document.getElementById('maintenanceBanner').style.display = 'flex';
+    });
+
+    window.BodyIQContent.fetchPublishedAnnouncement().then(function (text) {
+      if (!text) return;
+      let dismissed = null;
+      try { dismissed = sessionStorage.getItem('bodyiqAnnouncementDismissed'); } catch (e) {}
+      if (dismissed === text) return;
+      const banner = document.getElementById('announcementBanner');
+      document.getElementById('announcementText').textContent = text;
+      banner.style.display = 'flex';
+      document.getElementById('announcementDismiss').addEventListener('click', function () {
+        try { sessionStorage.setItem('bodyiqAnnouncementDismissed', text); } catch (e) {}
+        banner.style.display = 'none';
+      });
+    });
+  }
 </script>
 
 </body>
