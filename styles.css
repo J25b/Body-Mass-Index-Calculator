@@ -604,7 +604,7 @@ input[type=number] { -moz-appearance: textfield; }
 
 .wellness-insight {
   font-family: 'Karla', sans-serif;
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--ink);
   background: var(--accent-bg);
   border-left: 3px solid var(--brass);
