@@ -7,8 +7,8 @@
 // already configured those there, copy the same two values here.
 
 (function () {
-  var SUPABASE_URL = 'https://replace-with-your-bodyiq-hq-project.supabase.co';
-  var SUPABASE_ANON_KEY = 'replace-with-your-anon-public-key';
+  var SUPABASE_URL = 'https://stebrrcpglrjdvalubxj.supabase.co/rest/v1/';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN0ZWJycmNwZ2xyamR2YWx1YnhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU0MTU2OTgsImV4cCI6MjEwMDk5MTY5OH0.YrdFFOH3P9WdW-qh9a6DFvi9k8rqnhpcHcOK35Cwd-4';
 
   var client = null;
   try {
